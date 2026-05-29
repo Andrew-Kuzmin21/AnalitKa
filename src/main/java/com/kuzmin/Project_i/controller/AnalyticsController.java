@@ -1,4 +1,5 @@
 package com.kuzmin.Project_i.controller;
+
 import com.kuzmin.Project_i.service.AbcAnalyseService;
 import com.kuzmin.Project_i.service.RfmAnalyseService;
 import com.kuzmin.Project_i.service.XyzAnalyseService;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/analytics")
 public class AnalyticsController {
+
     private final AbcAnalyseService abcAnalyseService;
     private final XyzAnalyseService xyzAnalyseService;
     private final RfmAnalyseService rfmAnalyseService;
+
     public AnalyticsController(
             AbcAnalyseService abcAnalyseService,
             XyzAnalyseService xyzAnalyseService,

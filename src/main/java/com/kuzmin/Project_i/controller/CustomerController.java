@@ -1,8 +1,6 @@
 package com.kuzmin.Project_i.controller;
 import com.kuzmin.Project_i.model.Customer;
-import com.kuzmin.Project_i.service.ImportService;
-import com.kuzmin.Project_i.service.CustomerService;
-import com.kuzmin.Project_i.service.RfmAnalyseService;
+import com.kuzmin.Project_i.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +13,24 @@ public class CustomerController {
     private final ImportService importService;
     private final RfmAnalyseService rfmAnalyseService;
 
-    public CustomerController(CustomerService customerService, ImportService importService, RfmAnalyseService rfmAnalyseService) {
+    private final AbcAnalyseService abcAnalyseService;
+    private final XyzAnalyseService xyzAnalyseService;
+    private final AbcXyzMatrixService abcXyzMatrixService;
+
+    public CustomerController(
+            CustomerService customerService,
+            ImportService importService,
+            RfmAnalyseService rfmAnalyseService,
+            AbcAnalyseService abcAnalyseService,
+            XyzAnalyseService xyzAnalyseService,
+            AbcXyzMatrixService abcXyzMatrixService
+    ) {
         this.customerService = customerService;
         this.importService = importService;
         this.rfmAnalyseService = rfmAnalyseService;
+        this.abcAnalyseService = abcAnalyseService;
+        this.xyzAnalyseService = xyzAnalyseService;
+        this.abcXyzMatrixService = abcXyzMatrixService;
     }
 
     @GetMapping("/import")
@@ -62,6 +74,10 @@ public class CustomerController {
     ) {
         importService.importCsv(file);
         rfmAnalyseService.runAnalysis();
+        abcAnalyseService.runAnalysis();
+        xyzAnalyseService.runAnalysis();
+        abcXyzMatrixService.runAnalysis();
+
         return "redirect:/customers";
     }
 
