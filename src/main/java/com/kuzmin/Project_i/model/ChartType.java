@@ -5,5 +5,6 @@ public enum ChartType {
     BAR,
     LINE,
     HISTOGRAM,
-    TABLE
+    TABLE,
+    DOUGHNUT
 }

@@ -89,26 +89,38 @@
         <canvas id="rfmChart"></canvas>
     </div>
 
+    <div>
+        <h2>ABC Analysis</h2>
+        <canvas id="abcChart"></canvas>
+    </div>
+
+    <div>
+        <h2>XYZ Analysis</h2>
+        <canvas id="xyzChart"></canvas>
+    </div>
+
+    <div>
+        <h2>ABC/XYZ Matrix</h2>
+        <canvas id="matrixChart"></canvas>
+    </div>
+
 </div>
 
 <script th:inline="javascript">
 
-    const regions =
-        [[${stats.customersByRegion}]];
+    const regions = [[${stats.customersByRegion}]];
+    const ageGroups = [[${stats.customersByAgeGroup}]];
 
-    const ageGroups =
-        [[${stats.customersByAgeGroup}]];
-
-    const rfmSegments =
-        [[${stats.rfmSegments}]];
+    const rfmSegments = [[${stats.rfmSegments}]];
+    const abcCategories = [[${stats.abcCategories}]];
+    const xyzCategories = [[${stats.xyzCategories}]];
+    const matrixGroups = [[${stats.abcXyzGroups}]];
 
     new Chart(
         document.getElementById('regionChart'),
         {
             type: 'bar',
-
             data: {
-
                 labels: Object.keys(regions),
 
                 datasets: [{
@@ -123,9 +135,7 @@
         document.getElementById('ageChart'),
         {
             type: 'pie',
-
             data: {
-
                 labels: Object.keys(ageGroups),
 
                 datasets: [{
@@ -139,13 +149,54 @@
         document.getElementById('rfmChart'),
         {
             type: 'doughnut',
-
             data: {
-
                 labels: Object.keys(rfmSegments),
 
                 datasets: [{
                     data: Object.values(rfmSegments)
+                }]
+            }
+        }
+    );
+
+    new Chart(
+        document.getElementById('abcChart'),
+        {
+            type: 'pie',
+            data: {
+                labels: Object.keys(abcCategories),
+
+                datasets: [{
+                    data: Object.values(abcCategories)
+                }]
+            }
+        }
+    );
+
+    new Chart(
+        document.getElementById('xyzChart'),
+        {
+            type: 'pie',
+            data: {
+                labels: Object.keys(xyzCategories),
+
+                datasets: [{
+                    data: Object.values(xyzCategories)
+                }]
+            }
+        }
+    );
+
+    new Chart(
+        document.getElementById('matrixChart'),
+        {
+            type: 'bar',
+            data: {
+                labels: Object.keys(matrixGroups),
+
+                datasets: [{
+                    label: 'Customers',
+                    data: Object.values(matrixGroups)
                 }]
             }
         }

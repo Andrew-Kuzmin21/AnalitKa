@@ -4,8 +4,7 @@ import com.kuzmin.Project_i.dto.DashboardStatisticsDto;
 import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.RfmAnalyse;
 import com.kuzmin.Project_i.model.Sex;
-import com.kuzmin.Project_i.repository.CustomerRepository;
-import com.kuzmin.Project_i.repository.RfmAnalyseRepository;
+import com.kuzmin.Project_i.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +20,19 @@ public class DashboardService {
 
     private final CustomerRepository customerRepository;
     private final RfmAnalyseRepository rfmAnalyseRepository;
+    private final AbcAnalyseRepository abcAnalyseRepository;
+    private final XyzAnalyseRepository xyzAnalyseRepository;
+    private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
     public DashboardStatisticsDto getStatistics() {
 
-        List<Customer> customers =
-                customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAll();
 
-        List<RfmAnalyse> rfmAnalyses =
-                rfmAnalyseRepository.findAll();
+        List<RfmAnalyse> rfmAnalyses = rfmAnalyseRepository.findAll();
 
-        DashboardStatisticsDto dto =
-                new DashboardStatisticsDto();
+        DashboardStatisticsDto dto = new DashboardStatisticsDto();
 
-        dto.setTotalCustomers(
-                (long) customers.size()
-        );
+        dto.setTotalCustomers((long) customers.size());
 
         dto.setAverageAge(
                 customers.stream()
@@ -50,7 +47,6 @@ public class DashboardService {
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (!customers.isEmpty()) {
-
             averageCheck =
                     averageCheck.divide(
                             BigDecimal.valueOf(customers.size()),
@@ -59,9 +55,7 @@ public class DashboardService {
                     );
         }
 
-        dto.setAverageCheck(
-                averageCheck
-        );
+        dto.setAverageCheck(averageCheck);
 
         long maleCount =
                 customers.stream()
@@ -74,21 +68,13 @@ public class DashboardService {
                         .count();
 
         if (!customers.isEmpty()) {
-
-            dto.setMalePercent(
-                    maleCount * 100.0 / customers.size()
-            );
-
-            dto.setFemalePercent(
-                    femaleCount * 100.0 / customers.size()
-            );
+            dto.setMalePercent(maleCount * 100.0 / customers.size());
+            dto.setFemalePercent(femaleCount * 100.0 / customers.size());
         }
 
-        Map<String, Long> regions =
-                new LinkedHashMap<>();
+        Map<String, Long> regions = new LinkedHashMap<>();
 
         for (Customer customer : customers) {
-
             regions.put(
                     customer.getRegion(),
                     regions.getOrDefault(
@@ -98,12 +84,9 @@ public class DashboardService {
             );
         }
 
-        dto.setCustomersByRegion(
-                regions
-        );
+        dto.setCustomersByRegion(regions);
 
-        Map<String, Long> ageGroups =
-                new LinkedHashMap<>();
+        Map<String, Long> ageGroups = new LinkedHashMap<>();
 
         ageGroups.put("18-25", 0L);
         ageGroups.put("26-35", 0L);
@@ -111,32 +94,24 @@ public class DashboardService {
         ageGroups.put("46+", 0L);
 
         for (Customer customer : customers) {
-
             int age = customer.getAge();
 
             if (age <= 25) {
-
                 ageGroups.put(
                         "18-25",
                         ageGroups.get("18-25") + 1
                 );
-
             } else if (age <= 35) {
-
                 ageGroups.put(
                         "26-35",
                         ageGroups.get("26-35") + 1
                 );
-
             } else if (age <= 45) {
-
                 ageGroups.put(
                         "36-45",
                         ageGroups.get("36-45") + 1
                 );
-
             } else {
-
                 ageGroups.put(
                         "46+",
                         ageGroups.get("46+") + 1
@@ -144,17 +119,12 @@ public class DashboardService {
             }
         }
 
-        dto.setCustomersByAgeGroup(
-                ageGroups
-        );
+        dto.setCustomersByAgeGroup(ageGroups);
 
-        Map<String, Long> rfmSegments =
-                new LinkedHashMap<>();
+        Map<String, Long> rfmSegments = new LinkedHashMap<>();
 
         for (RfmAnalyse analyse : rfmAnalyses) {
-
-            String segment =
-                    analyse.getRfmSegment().name();
+            String segment = analyse.getRfmSegment().name();
 
             rfmSegments.put(
                     segment,
@@ -165,9 +135,59 @@ public class DashboardService {
             );
         }
 
-        dto.setRfmSegments(
-                rfmSegments
-        );
+        Map<String, Long> abcCategories = new LinkedHashMap<>();
+
+        abcCategories.put("A", 0L);
+        abcCategories.put("B", 0L);
+        abcCategories.put("C", 0L);
+
+        abcAnalyseRepository.findAll()
+                .forEach(analyse -> {
+                    String category = analyse.getAbcCategory().name();
+
+                    abcCategories.put(
+                            category,
+                            abcCategories.get(category) + 1
+                    );
+                });
+
+        dto.setAbcCategories(abcCategories);
+
+        Map<String, Long> xyzCategories = new LinkedHashMap<>();
+
+        xyzCategories.put("X", 0L);
+        xyzCategories.put("Y", 0L);
+        xyzCategories.put("Z", 0L);
+
+        xyzAnalyseRepository.findAll()
+                .forEach(analyse -> {
+                    String category = analyse.getXyzCategory().name();
+
+                    xyzCategories.put(
+                            category,
+                            xyzCategories.get(category) + 1
+                    );
+                });
+
+        dto.setXyzCategories(xyzCategories);
+
+        Map<String, Long> matrixGroups = new LinkedHashMap<>();
+
+        abcXyzMatrixRepository.findAll()
+                .forEach(matrix -> {
+                    String group = matrix.getMatrixGroup();
+
+                    matrixGroups.put(
+                            group,
+                            matrixGroups.getOrDefault(
+                                    group,
+                                    0L
+                            ) + 1
+                    );
+                });
+
+        dto.setAbcXyzGroups(matrixGroups);
+        dto.setRfmSegments(rfmSegments);
 
         return dto;
     }
