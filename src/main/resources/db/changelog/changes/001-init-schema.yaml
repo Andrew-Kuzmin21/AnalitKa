@@ -1,0 +1,607 @@
+  databaseChangeLog:
+
+    # =========================
+    # SEQUENCES
+    # =========================
+
+    - changeSet:
+        id: 001-create-sequences
+        author: kuzmin
+
+        changes:
+
+          - createSequence:
+              sequenceName: user_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: customer_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: segment_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: dashboard_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: chart_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: abc_analyse_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: xyz_analyse_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: abc_xyz_matrix_id_seq
+              startValue: 1
+
+          - createSequence:
+              sequenceName: rfm_analyse_id_seq
+              startValue: 1
+
+    # =========================
+    # USERS
+    # =========================
+
+    - changeSet:
+        id: 002-create-users
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: users
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: user_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: user_email
+                    type: VARCHAR(50)
+                    constraints:
+                      nullable: false
+                      unique: true
+
+                - column:
+                    name: user_password
+                    type: VARCHAR(100)
+                    constraints:
+                      nullable: false
+
+    # =========================
+    # CUSTOMERS
+    # =========================
+
+    - changeSet:
+        id: 003-create-customers
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: customers
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: customer_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: customer_age
+                    type: INTEGER
+
+                - column:
+                    name: customer_sex
+                    type: VARCHAR(20)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: customer_region
+                    type: VARCHAR(255)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: customer_date_of_registration
+                    type: DATE
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: customer_count_of_orders
+                    type: INTEGER
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: customer_average_check
+                    type: DECIMAL(19,2)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: customer_total_spends
+                    type: DECIMAL(19,2)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: customer_last_order_date
+                    type: DATE
+
+    # =========================
+    # SEGMENTS
+    # =========================
+
+    - changeSet:
+        id: 004-create-segments
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: segments
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: segment_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: segment_name
+                    type: VARCHAR(255)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: segment_description
+                    type: TEXT
+
+                - column:
+                    name: segment_filter_query
+                    type: TEXT
+
+                - column:
+                    name: segment_creation_date
+                    type: TIMESTAMP
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: user_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+          - addForeignKeyConstraint:
+              baseTableName: segments
+              baseColumnNames: user_id
+              referencedTableName: users
+              referencedColumnNames: id
+              constraintName: fk_segments_user
+
+    # =========================
+    # DASHBOARDS
+    # =========================
+
+    - changeSet:
+        id: 005-create-dashboards
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: dashboards
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: dashboard_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: dashboard_name
+                    type: VARCHAR(255)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: dashboard_description
+                    type: TEXT
+
+                - column:
+                    name: user_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: segment_id
+                    type: BIGINT
+
+                - column:
+                    name: is_default
+                    type: BOOLEAN
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: dashboard_creation_date
+                    type: TIMESTAMP
+                    constraints:
+                      nullable: false
+
+          - addForeignKeyConstraint:
+              baseTableName: dashboards
+              baseColumnNames: user_id
+              referencedTableName: users
+              referencedColumnNames: id
+              constraintName: fk_dashboards_user
+
+          - addForeignKeyConstraint:
+              baseTableName: dashboards
+              baseColumnNames: segment_id
+              referencedTableName: segments
+              referencedColumnNames: id
+              constraintName: fk_dashboards_segment
+
+    # =========================
+    # CHARTS
+    # =========================
+
+    - changeSet:
+        id: 006-create-charts
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: charts
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: chart_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: chart_name
+                    type: VARCHAR(100)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: dashboard_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: chart_type
+                    type: VARCHAR(50)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: chart_axis_x
+                    type: VARCHAR(255)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: chart_axis_y
+                    type: VARCHAR(255)
+
+                - column:
+                    name: chart_aggregation_type
+                    type: VARCHAR(50)
+
+                - column:
+                    name: chart_position_x
+                    type: INTEGER
+
+                - column:
+                    name: chart_position_y
+                    type: INTEGER
+
+                - column:
+                    name: chart_width
+                    type: INTEGER
+
+                - column:
+                    name: chart_height
+                    type: INTEGER
+
+          - addForeignKeyConstraint:
+              baseTableName: charts
+              baseColumnNames: dashboard_id
+              referencedTableName: dashboards
+              referencedColumnNames: id
+              constraintName: fk_charts_dashboard
+
+    # =========================
+    # ABC ANALYSIS
+    # =========================
+
+    - changeSet:
+        id: 007-create-abc-analysis
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: abc_analysis
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: abc_analyse_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: customer_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: abc_analyse_category
+                    type: VARCHAR(10)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: abc_analyse_contribution_percent
+                    type: DECIMAL(10,2)
+
+                - column:
+                    name: abc_analyse_customer_revenue
+                    type: DOUBLE
+
+                - column:
+                    name: abc_analyse_creation_date
+                    type: TIMESTAMP
+                    constraints:
+                      nullable: false
+
+          - addForeignKeyConstraint:
+              baseTableName: abc_analysis
+              baseColumnNames: customer_id
+              referencedTableName: customers
+              referencedColumnNames: id
+              constraintName: fk_abc_customer
+
+    # =========================
+    # XYZ ANALYSIS
+    # =========================
+
+    - changeSet:
+        id: 008-create-xyz-analysis
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: xyz_analysis
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: xyz_analyse_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: customer_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: xyz_analyse_category
+                    type: VARCHAR(10)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: xyz_analyse_variation_coefficient
+                    type: DECIMAL(10,2)
+
+                - column:
+                    name: xyz_analyse_purchase_stability
+                    type: VARCHAR(255)
+
+                - column:
+                    name: xyz_analyse_creation_date
+                    type: TIMESTAMP
+                    constraints:
+                      nullable: false
+
+          - addForeignKeyConstraint:
+              baseTableName: xyz_analysis
+              baseColumnNames: customer_id
+              referencedTableName: customers
+              referencedColumnNames: id
+              constraintName: fk_xyz_customer
+
+    # =========================
+    # ABC XYZ MATRIX
+    # =========================
+
+    - changeSet:
+        id: 009-create-abc-xyz-matrix
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: abc_xyz_matrix
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: abc_xyz_matrix_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: customer_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: abc_analyse_category
+                    type: VARCHAR(10)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: xyz_analyse_category
+                    type: VARCHAR(10)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: abc_xyz_matrix_matrix_group
+                    type: VARCHAR(50)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: abc_xyz_matrix_recommendations
+                    type: TEXT
+
+          - addForeignKeyConstraint:
+              baseTableName: abc_xyz_matrix
+              baseColumnNames: customer_id
+              referencedTableName: customers
+              referencedColumnNames: id
+              constraintName: fk_matrix_customer
+
+    # =========================
+    # RFM ANALYSIS
+    # =========================
+
+    - changeSet:
+        id: 010-create-rfm-analysis
+        author: kuzmin
+
+        changes:
+
+          - createTable:
+              tableName: rfm_analysis
+
+              columns:
+
+                - column:
+                    name: id
+                    type: BIGINT
+                    defaultValueSequenceNext: rfm_analyse_id_seq
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+
+                - column:
+                    name: customer_id
+                    type: BIGINT
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_recency
+                    type: DOUBLE
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_frequency
+                    type: DOUBLE
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_monetary
+                    type: DOUBLE
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_r_score
+                    type: INTEGER
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_f_score
+                    type: INTEGER
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_m_score
+                    type: INTEGER
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_segment
+                    type: VARCHAR(50)
+                    constraints:
+                      nullable: false
+
+                - column:
+                    name: rfm_analyse_creation_date
+                    type: TIMESTAMP
+                    constraints:
+                      nullable: false
+
+          - addForeignKeyConstraint:
+              baseTableName: rfm_analysis
+              baseColumnNames: customer_id
+              referencedTableName: customers
+              referencedColumnNames: id
+              constraintName: fk_rfm_customer

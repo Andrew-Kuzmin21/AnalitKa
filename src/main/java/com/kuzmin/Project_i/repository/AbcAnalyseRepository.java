@@ -1,0 +1,19 @@
+package com.kuzmin.Project_i.repository;
+
+import com.kuzmin.Project_i.model.AbcAnalyse;
+import com.kuzmin.Project_i.model.AbcCategory;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface AbcAnalyseRepository extends CrudRepository<AbcAnalyse, Long> {
+
+    List<AbcAnalyse> findAll();
+
+    List<AbcAnalyse> findByCustomerId(Long customerId);
+
+    List<AbcAnalyse> findByAbcCategory(AbcCategory category);
+
+}

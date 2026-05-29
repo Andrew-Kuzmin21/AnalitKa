@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Import Customers</title>
+</head>
+<body>
+
+<h1>Импорт клиентов</h1>
+
+<form method="post"
+      enctype="multipart/form-data"
+      th:action="@{/customers/import}">
+
+    <input type="file"
+           name="file"
+           accept=".csv">
+
+    <button type="submit">
+        Импортировать
+    </button>
+
+</form>
+
+</body>
+</html>
