@@ -39,6 +39,9 @@ public class RfmAnalyse {
     @Column(name = "rfm_analyse_m_score", nullable = false)
     private Integer mScore;
 
+    @Column(name = "rfm_analyse_score", nullable = false)
+    private String rfmScore;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "rfm_analyse_segment", nullable = false)
     private RfmSegment rfmSegment;

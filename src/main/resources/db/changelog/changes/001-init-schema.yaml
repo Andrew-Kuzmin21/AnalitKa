@@ -588,6 +588,12 @@
                       nullable: false
 
                 - column:
+                    name: rfm_analyse_score
+                    type: VARCHAR(10)
+                    constraints:
+                      nullable: false
+
+                - column:
                     name: rfm_analyse_segment
                     type: VARCHAR(50)
                     constraints:

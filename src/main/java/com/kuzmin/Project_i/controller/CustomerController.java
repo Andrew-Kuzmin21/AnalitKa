@@ -2,6 +2,7 @@ package com.kuzmin.Project_i.controller;
 import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.service.ImportService;
 import com.kuzmin.Project_i.service.CustomerService;
+import com.kuzmin.Project_i.service.RfmAnalyseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class CustomerController {
     private final CustomerService customerService;
     private final ImportService importService;
+    private final RfmAnalyseService rfmAnalyseService;
 
-    public CustomerController(CustomerService customerService, ImportService importService) {
+    public CustomerController(CustomerService customerService, ImportService importService, RfmAnalyseService rfmAnalyseService) {
         this.customerService = customerService;
         this.importService = importService;
+        this.rfmAnalyseService = rfmAnalyseService;
     }
 
     @GetMapping("/import")
@@ -58,6 +61,7 @@ public class CustomerController {
             @RequestParam("file") MultipartFile file
     ) {
         importService.importCsv(file);
+        rfmAnalyseService.runAnalysis();
         return "redirect:/customers";
     }
 
