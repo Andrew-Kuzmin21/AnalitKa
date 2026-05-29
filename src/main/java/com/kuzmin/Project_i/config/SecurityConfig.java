@@ -33,7 +33,14 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests((request) -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/home","/error","/login","/registration", "/customers/import/**").permitAll()
+                        .requestMatchers(
+                                "/home",
+                                "/error",
+                                "/login",
+                                "/registration",
+                                "/customers/import/**",
+                                "/dashboard/**"
+                        ).permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
