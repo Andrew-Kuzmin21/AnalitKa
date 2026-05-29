@@ -1,6 +1,7 @@
 package com.kuzmin.Project_i.repository;
 
 import com.kuzmin.Project_i.model.AbcXyzMatrix;
+import com.kuzmin.Project_i.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -13,5 +14,9 @@ public interface AbcXyzMatrixRepository extends PagingAndSortingRepository<AbcXy
     List<AbcXyzMatrix> findByCustomerId(Long customerId);
 
     List<AbcXyzMatrix> findByMatrixGroup(String matrixGroup);
+
+    List<AbcXyzMatrix> findAllByCustomerUser(User user);
+
+    void deleteAllByCustomerUser(User user);
 
 }

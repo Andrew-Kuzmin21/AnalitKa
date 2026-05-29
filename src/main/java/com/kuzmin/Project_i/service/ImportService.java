@@ -2,6 +2,7 @@ package com.kuzmin.Project_i.service;
 
 import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.Sex;
+import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.repository.CustomerRepository;
 import com.opencsv.CSVReader;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class ImportService {
 
     private final CustomerRepository customerRepository;
 
-    public void importCsv(MultipartFile file) {
+    public void importCsv(MultipartFile file, User user) {
 
         if (file.isEmpty()) {
             throw new RuntimeException("Файл пуст");
@@ -88,6 +89,7 @@ public class ImportService {
                         LocalDate.parse(row[7])
                 );
 
+                customer.setUser(user);
                 customerRepository.save(customer);
             }
 

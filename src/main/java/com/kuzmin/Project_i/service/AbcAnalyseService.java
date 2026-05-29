@@ -3,6 +3,7 @@ package com.kuzmin.Project_i.service;
 import com.kuzmin.Project_i.model.AbcAnalyse;
 import com.kuzmin.Project_i.model.AbcCategory;
 import com.kuzmin.Project_i.model.Customer;
+import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.repository.AbcAnalyseRepository;
 import com.kuzmin.Project_i.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -22,11 +24,11 @@ public class AbcAnalyseService {
     private final AbcAnalyseRepository abcAnalyseRepository;
 
     @Transactional
-    public void runAnalysis() {
+    public void runAnalysis(User user) {
 
-        abcAnalyseRepository.deleteAll();
+        abcAnalyseRepository.deleteAllByCustomerUser(user);
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAllByUser(user);
 
         customers.sort(
                 Comparator.comparing(
@@ -59,7 +61,7 @@ public class AbcAnalyseService {
                             .divide(
                                     totalRevenue,
                                     2,
-                                    BigDecimal.ROUND_HALF_UP
+                                    RoundingMode.HALF_UP
                             )
                             .doubleValue();
 

@@ -26,6 +26,7 @@ public class RegistrationController {
         model.addAttribute("user", new User());
         return "auth/registration";
     }
+
     /**
      * Обработка формы регистрации
      */

@@ -1,6 +1,7 @@
 package com.kuzmin.Project_i.service;
 
 import com.kuzmin.Project_i.model.Customer;
+import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.model.XyzAnalyse;
 import com.kuzmin.Project_i.model.XyzCategory;
 import com.kuzmin.Project_i.repository.CustomerRepository;
@@ -20,11 +21,11 @@ public class XyzAnalyseService {
     private final XyzAnalyseRepository xyzAnalyseRepository;
 
     @Transactional
-    public void runAnalysis() {
+    public void runAnalysis(User user) {
 
-        xyzAnalyseRepository.deleteAll();
+        xyzAnalyseRepository.deleteAllByCustomerUser(user);
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAllByUser(user);
 
         for (Customer customer : customers) {
 

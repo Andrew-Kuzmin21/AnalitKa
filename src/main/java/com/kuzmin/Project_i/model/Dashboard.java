@@ -32,7 +32,7 @@ public class Dashboard {
     @JoinColumn(name = "segment_id")
     private Segment segment;
 
-    @Column(name = "dashboard_is_default", nullable = false)
+    @Column(name = "is_default", nullable = false)
     private Boolean isDefault;
 
     @Column(name = "dashboard_creation_date", nullable = false)
@@ -40,4 +40,17 @@ public class Dashboard {
 
     @OneToMany(mappedBy = "dashboard")
     private List<Chart> charts;
+
+    @PrePersist
+    public void prePersist() {
+
+        if (creationDate == null) {
+            creationDate = LocalDateTime.now();
+        }
+
+        if (isDefault == null) {
+            isDefault = false;
+        }
+    }
+
 }

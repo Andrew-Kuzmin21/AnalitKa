@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Chart</title>
+</head>
+<body>
+
+<h1>Create Chart</h1>
+
+<form th:action="@{/charts/create/{id}(id=${dashboardId})}"
+      th:object="${chart}"
+      method="post">
+
+    <div>
+        <label>Name</label>
+
+        <input type="text" th:field="*{chartName}">
+    </div>
+
+    <div>
+        <label>Chart Type</label>
+
+        <select th:field="*{chartType}">
+            <option
+                    th:each="type : ${chartTypes}"
+                    th:value="${type}"
+                    th:text="${type}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>X Axis</label>
+
+        <select th:field="*{chartAxisX}">
+            <option value="region">
+                Region
+            </option>
+
+            <option value="sex">
+                Sex
+            </option>
+
+            <option value="ageGroup">
+                Age Group
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Y Axis</label>
+
+        <select th:field="*{chartAxisY}">
+            <option value="totalSpent">
+                Total Spent
+            </option>
+
+            <option value="averageCheck">
+                Average Check
+            </option>
+
+            <option value="countOfOrders">
+                Count Of Orders
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Aggregation</label>
+
+        <select th:field="*{chartAggregationType}">
+            <option
+                    th:each="type : ${aggregationTypes}"
+                    th:value="${type}"
+                    th:text="${type}">
+            </option>
+        </select>
+    </div>
+
+    <button type="submit">Create</button>
+
+</form>
+
+</body>
+</html>

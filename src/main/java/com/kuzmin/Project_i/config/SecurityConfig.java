@@ -39,14 +39,16 @@ public class SecurityConfig {
                                 "/login",
                                 "/registration",
                                 "/customers/import/**",
-                                "/dashboard/**"
+                                "/dashboards/**",
+                                "/dashboard/**",
+                                "/charts/**"
                         ).permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/home", true)
+                        .defaultSuccessUrl("/dashboards", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

@@ -1,6 +1,8 @@
 package com.kuzmin.Project_i.controller;
 import com.kuzmin.Project_i.model.Customer;
+import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.service.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,23 +41,37 @@ public class CustomerController {
     }
 
     @GetMapping
-    public String findAll(Model model) {
+    public String findAll(
+            Model model,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+
         model.addAttribute(
                 "customers",
-                customerService.findAll()
+                customerService.findAllByUser(user)
         );
+
         return "customers/list";
     }
 
     @GetMapping("/{id}")
     public String findById(
             @PathVariable Long id,
-            Model model
+            Model model,
+            Authentication authentication
     ) {
+
+        User user = (User) authentication.getPrincipal();
+
         model.addAttribute(
                 "customer",
-                customerService.findById(id)
+                customerService.findByIdAndUser(
+                        id,
+                        user
+                )
         );
+
         return "customers/view";
     }
 
@@ -70,44 +86,66 @@ public class CustomerController {
 
     @PostMapping("/import")
     public String importCsv(
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile file,
+            Authentication authentication
     ) {
-        importService.importCsv(file);
-        rfmAnalyseService.runAnalysis();
-        abcAnalyseService.runAnalysis();
-        xyzAnalyseService.runAnalysis();
-        abcXyzMatrixService.runAnalysis();
 
-        return "redirect:/customers";
+        User user = (User) authentication.getPrincipal();
+
+        importService.importCsv(file, user);
+
+        rfmAnalyseService.runAnalysis(user);
+        abcAnalyseService.runAnalysis(user);
+        xyzAnalyseService.runAnalysis(user);
+        abcXyzMatrixService.runAnalysis(user);
+
+        return "redirect:/dashboards";
     }
 
     @PostMapping("/create")
     public String create(
-            @ModelAttribute Customer customer
+            @ModelAttribute Customer customer,
+            Authentication authentication
     ) {
+        User user = (User) authentication.getPrincipal();
+
+        customer.setUser(user);
+
         customerService.save(customer);
+
         return "redirect:/customers";
     }
 
     @GetMapping("/edit/{id}")
     public String editPage(
             @PathVariable Long id,
-            Model model
+            Model model,
+            Authentication authentication
     ) {
+        User user = (User) authentication.getPrincipal();
+
         model.addAttribute(
                 "customer",
-                customerService.findById(id)
+                customerService.findByIdAndUser(id, user)
         );
+
         return "customers/edit";
     }
 
     @PostMapping("/edit/{id}")
     public String edit(
             @PathVariable Long id,
-            @ModelAttribute Customer customer
+            @ModelAttribute Customer customer,
+            Authentication authentication
     ) {
+        User user = (User) authentication.getPrincipal();
+
         customer.setId(id);
+
+        customer.setUser(user);
+
         customerService.save(customer);
+
         return "redirect:/customers";
     }
 

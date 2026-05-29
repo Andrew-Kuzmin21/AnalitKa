@@ -17,7 +17,7 @@ public class Chart {
     private Long id;
 
     @Column(name = "chart_name", length = 100, nullable = false)
-    private String name;
+    private String chartName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dashboard_id", nullable = false)
@@ -28,14 +28,14 @@ public class Chart {
     private ChartType chartType;
 
     @Column(name = "chart_axis_x", nullable = false)
-    private String axisX;
+    private String chartAxisX;
 
     @Column(name = "chart_axis_y")
-    private String axisY;
+    private String chartAxisY;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "chart_aggregation_type", nullable = false)
-    private AggregationType aggregationType;
+    private AggregationType chartAggregationType;
 
     @Column(name = "chart_position_x")
     private Integer positionX;
@@ -48,5 +48,7 @@ public class Chart {
 
     @Column(name = "chart_height")
     private Integer height;
+
+
 
 }

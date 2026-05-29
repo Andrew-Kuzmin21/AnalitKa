@@ -19,28 +19,18 @@ public class AbcXyzMatrixService {
     private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
     @Transactional
-    public void runAnalysis() {
+    public void runAnalysis(User user) {
 
-        abcXyzMatrixRepository.deleteAll();
+        abcXyzMatrixRepository.deleteAllByCustomerUser(user);
 
-        List<AbcAnalyse> abcList = abcAnalyseRepository.findAll();
+        List<AbcAnalyse> abcList = abcAnalyseRepository.findAllByCustomerUser(user);
 
         for (AbcAnalyse abc : abcList) {
-
             XyzAnalyse xyz =
                     xyzAnalyseRepository
-                            .findAll()
-                            .stream()
-                            .filter(
-                                    x ->
-                                            x.getCustomer()
-                                                    .getId()
-                                                    .equals(
-                                                            abc.getCustomer()
-                                                                    .getId()
-                                                    )
+                            .findByCustomer(
+                                    abc.getCustomer()
                             )
-                            .findFirst()
                             .orElse(null);
 
             if (xyz == null) {

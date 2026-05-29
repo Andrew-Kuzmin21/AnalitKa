@@ -44,6 +44,10 @@ public class Customer {
     @Column(name = "customer_last_order_date")
     private LocalDate lastOrderDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "customer")
     private List<AbcAnalyse> abcAnalyses;
 

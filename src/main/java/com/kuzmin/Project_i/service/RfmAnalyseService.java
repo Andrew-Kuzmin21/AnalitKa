@@ -3,6 +3,7 @@ package com.kuzmin.Project_i.service;
 import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.RfmAnalyse;
 import com.kuzmin.Project_i.model.RfmSegment;
+import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.repository.CustomerRepository;
 import com.kuzmin.Project_i.repository.RfmAnalyseRepository;
 import jakarta.transaction.Transactional;
@@ -22,11 +23,11 @@ public class RfmAnalyseService {
     private final RfmAnalyseRepository rfmAnalyseRepository;
 
     @Transactional
-    public void runAnalysis() {
+    public void runAnalysis(User user) {
 
-        rfmAnalyseRepository.deleteAll();
+        rfmAnalyseRepository.deleteAllByCustomerUser(user);
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAllByUser(user);
 
         for (Customer customer : customers) {
 
@@ -36,13 +37,9 @@ public class RfmAnalyseService {
             );
 
             int frequency = customer.getCountOfOrders();
-
             double monetary = customer.getTotalSpent().doubleValue();
-
             int rScore = calculateRecencyScore(recencyDays);
-
             int fScore = calculateFrequencyScore(frequency);
-
             int mScore = calculateMonetaryScore(monetary);
 
             String rfmScore = rScore + "" + fScore + "" + mScore;
@@ -84,7 +81,6 @@ public class RfmAnalyseService {
     }
 
     private int calculateRecencyScore(long days) {
-
         if (days <= 30) {
             return 5;
         }
@@ -105,7 +101,6 @@ public class RfmAnalyseService {
     }
 
     private int calculateFrequencyScore(int frequency) {
-
         if (frequency >= 50) {
             return 5;
         }
@@ -126,7 +121,6 @@ public class RfmAnalyseService {
     }
 
     private int calculateMonetaryScore(double monetary) {
-
         if (monetary >= 10000) {
             return 5;
         }
@@ -147,7 +141,6 @@ public class RfmAnalyseService {
     }
 
     private RfmSegment determineSegment(int r, int f, int m) {
-
         if (r >= 4 && f >= 4 && m >= 4) {
             return RfmSegment.VIP;
         }

@@ -1,9 +1,7 @@
 package com.kuzmin.Project_i.service;
 
 import com.kuzmin.Project_i.dto.DashboardStatisticsDto;
-import com.kuzmin.Project_i.model.Customer;
-import com.kuzmin.Project_i.model.RfmAnalyse;
-import com.kuzmin.Project_i.model.Sex;
+import com.kuzmin.Project_i.model.*;
 import com.kuzmin.Project_i.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,16 +17,17 @@ import java.util.Map;
 public class DashboardService {
 
     private final CustomerRepository customerRepository;
+    private final DashboardRepository dashboardRepository;
     private final RfmAnalyseRepository rfmAnalyseRepository;
     private final AbcAnalyseRepository abcAnalyseRepository;
     private final XyzAnalyseRepository xyzAnalyseRepository;
     private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
-    public DashboardStatisticsDto getStatistics() {
+    public DashboardStatisticsDto getStatistics(User user) {
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customers = customerRepository.findAllByUser(user);
 
-        List<RfmAnalyse> rfmAnalyses = rfmAnalyseRepository.findAll();
+        List<RfmAnalyse> rfmAnalyses = rfmAnalyseRepository.findAllByCustomerUser(user);
 
         DashboardStatisticsDto dto = new DashboardStatisticsDto();
 
@@ -141,7 +140,7 @@ public class DashboardService {
         abcCategories.put("B", 0L);
         abcCategories.put("C", 0L);
 
-        abcAnalyseRepository.findAll()
+        abcAnalyseRepository.findAllByCustomerUser(user)
                 .forEach(analyse -> {
                     String category = analyse.getAbcCategory().name();
 
@@ -151,6 +150,7 @@ public class DashboardService {
                     );
                 });
 
+
         dto.setAbcCategories(abcCategories);
 
         Map<String, Long> xyzCategories = new LinkedHashMap<>();
@@ -159,7 +159,7 @@ public class DashboardService {
         xyzCategories.put("Y", 0L);
         xyzCategories.put("Z", 0L);
 
-        xyzAnalyseRepository.findAll()
+        xyzAnalyseRepository.findAllByCustomerUser(user)
                 .forEach(analyse -> {
                     String category = analyse.getXyzCategory().name();
 
@@ -173,7 +173,7 @@ public class DashboardService {
 
         Map<String, Long> matrixGroups = new LinkedHashMap<>();
 
-        abcXyzMatrixRepository.findAll()
+        abcXyzMatrixRepository.findAllByCustomerUser(user)
                 .forEach(matrix -> {
                     String group = matrix.getMatrixGroup();
 
@@ -190,5 +190,39 @@ public class DashboardService {
         dto.setRfmSegments(rfmSegments);
 
         return dto;
+    }
+
+    public List<Dashboard> findAll() {
+        return dashboardRepository.findAll();
+    }
+
+    public Dashboard findById(Long id) {
+        return dashboardRepository.findById(id)
+                .orElseThrow(
+                        () -> new RuntimeException("Dashboard not found")
+                );
+    }
+
+    public Dashboard save(Dashboard dashboard) {
+        return dashboardRepository.save(dashboard);
+    }
+
+    public void deleteById(Long id) {
+        dashboardRepository.deleteById(id);
+    }
+
+    public List<Dashboard> findAllByUser(User user) {
+        return dashboardRepository.findAllByUser(user);
+    }
+
+    public Dashboard findByIdAndUser(
+            Long id,
+            User user
+    ) {
+
+        return dashboardRepository
+                .findByIdAndUser(id, user)
+                .orElseThrow(() ->
+                        new RuntimeException("Dashboard not found"));
     }
 }
