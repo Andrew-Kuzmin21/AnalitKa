@@ -35,8 +35,7 @@ public class DashboardController {
 
         User user = (User) authentication.getPrincipal();
 
-        List<Dashboard> dashboards =
-                dashboardService.findAllByUser(user);
+        List<Dashboard> dashboards = dashboardService.findAllByUser(user);
 
         model.addAttribute(
                 "dashboards",
@@ -60,8 +59,7 @@ public class DashboardController {
 
         if (!dashboards.isEmpty()) {
 
-            Dashboard dashboard =
-                    dashboards.getFirst();
+            Dashboard dashboard = dashboards.getFirst();
 
             model.addAttribute(
                     "dashboard",
@@ -227,8 +225,7 @@ public class DashboardController {
             Model model
     ) {
 
-        User user =
-                (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         Dashboard dashboard =
                 dashboardService.findByIdAndUser(
@@ -236,8 +233,7 @@ public class DashboardController {
                         user
                 );
 
-        DashboardFormDto form =
-                new DashboardFormDto();
+        DashboardFormDto form = new DashboardFormDto();
 
         form.setDashboardName(
                 dashboard.getName()
@@ -300,11 +296,10 @@ public class DashboardController {
 
         User user = (User) authentication.getPrincipal();
 
-        Dashboard dashboard =
-                dashboardService.findByIdAndUser(
-                        id,
-                        user
-                );
+        Dashboard dashboard = dashboardService.findByIdAndUser(
+                id,
+                user
+        );
 
         dashboard.setName(
                 form.getDashboardName()
@@ -314,8 +309,7 @@ public class DashboardController {
                 form.getDashboardDescription()
         );
 
-        Segment segment =
-                dashboard.getSegment();
+        Segment segment = dashboard.getSegment();
 
         if (segment != null) {
 
@@ -362,11 +356,10 @@ public class DashboardController {
 
         User user = (User) authentication.getPrincipal();
 
-        Dashboard dashboard =
-                dashboardService.findByIdAndUser(
-                        id,
-                        user
-                );
+        Dashboard dashboard = dashboardService.findByIdAndUser(
+                id,
+                user
+        );
 
         dashboardService.deleteById(
                 dashboard.getId()
@@ -384,7 +377,6 @@ public class DashboardController {
                     segment.getId()
             );
         }
-
 
         return "redirect:/dashboards";
     }

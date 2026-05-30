@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
+
     private final CustomerService customerService;
     private final ImportService importService;
     private final RfmAnalyseService rfmAnalyseService;
@@ -61,7 +62,6 @@ public class CustomerController {
             Model model,
             Authentication authentication
     ) {
-
         User user = (User) authentication.getPrincipal();
 
         model.addAttribute(
@@ -89,7 +89,6 @@ public class CustomerController {
             @RequestParam("file") MultipartFile file,
             Authentication authentication
     ) {
-
         User user = (User) authentication.getPrincipal();
 
         importService.importCsv(file, user);
@@ -164,4 +163,5 @@ public class CustomerController {
         customerService.deleteById(id);
         return "redirect:/customers";
     }
+
 }

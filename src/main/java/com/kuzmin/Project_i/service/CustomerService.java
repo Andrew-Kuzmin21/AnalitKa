@@ -21,8 +21,7 @@ public class CustomerService {
     }
 
     public Customer findById(Long id) {
-        return customerRepository.findById(id)
-                .orElseThrow();
+        return customerRepository.findById(id).orElseThrow();
     }
 
     public Customer save(Customer customer) {

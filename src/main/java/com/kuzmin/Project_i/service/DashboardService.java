@@ -26,6 +26,8 @@ public class DashboardService {
     private final XyzAnalyseRepository xyzAnalyseRepository;
     private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
+    private final SegmentFilteringService segmentFilteringService;
+
     public DashboardStatisticsDto getStatistics(
             Dashboard dashboard
     ) {
@@ -33,7 +35,6 @@ public class DashboardService {
         List<Customer> customers;
 
         if (dashboard.getSegment() == null) {
-
             customers =
                     customerRepository.findAllByUser(
                             dashboard.getUser()
@@ -270,109 +271,11 @@ public class DashboardService {
         List<Customer> customers =
                 customerRepository.findAllByUser(user);
 
-        return customers.stream()
-
-                .filter(customer ->
-                        segment.getAgeFrom() == null
-                                || customer.getAge() >= segment.getAgeFrom()
-                )
-
-                .filter(customer ->
-                        segment.getAgeTo() == null
-                                || customer.getAge() <= segment.getAgeTo()
-                )
-
-                .filter(customer ->
-                        segment.getSex() == null
-                                || segment.getSex().isBlank()
-                                || customer.getSex().name()
-                                .equals(segment.getSex())
-                )
-
-                .filter(customer ->
-                        segment.getRegion() == null
-                                || segment.getRegion().isBlank()
-                                || customer.getRegion()
-                                .equalsIgnoreCase(segment.getRegion())
-                )
-
-                .filter(customer ->
-                        segment.getDateOfRegistrationFrom() == null
-                                || !customer.getDateOfRegistration()
-                                .isBefore(
-                                        segment.getDateOfRegistrationFrom()
-                                )
-                )
-
-                .filter(customer ->
-                        segment.getDateOfRegistrationTo() == null
-                                || !customer.getDateOfRegistration()
-                                .isAfter(
-                                        segment.getDateOfRegistrationTo()
-                                )
-                )
-
-                .filter(customer ->
-                        segment.getCountOfOrdersFrom() == null
-                                || customer.getCountOfOrders()
-                                >= segment.getCountOfOrdersFrom()
-                )
-
-                .filter(customer ->
-                        segment.getCountOfOrdersTo() == null
-                                || customer.getCountOfOrders()
-                                <= segment.getCountOfOrdersTo()
-                )
-
-                .filter(customer ->
-                        segment.getAverageCheckFrom() == null
-                                || customer.getAverageCheck().doubleValue()
-                                >= segment.getAverageCheckFrom()
-                )
-
-                .filter(customer ->
-                        segment.getAverageCheckTo() == null
-                                || customer.getAverageCheck().doubleValue()
-                                <= segment.getAverageCheckTo()
-                )
-
-                .filter(customer ->
-                        segment.getTotalSpendsFrom() == null
-                                || customer.getTotalSpent().doubleValue()
-                                >= segment.getTotalSpendsFrom()
-                )
-
-                .filter(customer ->
-                        segment.getTotalSpendsTo() == null
-                                || customer.getTotalSpent().doubleValue()
-                                <= segment.getTotalSpendsTo()
-                )
-
-                .filter(customer ->
-                        segment.getLastOrderDateFrom() == null
-                                || (
-                                customer.getLastOrderDate() != null
-                                        &&
-                                        !customer.getLastOrderDate()
-                                                .isBefore(
-                                                        segment.getLastOrderDateFrom()
-                                                )
-                        )
-                )
-
-                .filter(customer ->
-                        segment.getLastOrderDateTo() == null
-                                || (
-                                customer.getLastOrderDate() != null
-                                        &&
-                                        !customer.getLastOrderDate()
-                                                .isAfter(
-                                                        segment.getLastOrderDateTo()
-                                                )
-                        )
-                )
-
-                .toList();
+        return segmentFilteringService
+                .filterCustomers(
+                        customers,
+                        segment
+                );
     }
 
     public Dashboard update(
