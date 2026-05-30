@@ -170,8 +170,7 @@ public class DashboardService {
                 )
                 .forEach(analyse -> {
 
-                    String category =
-                            analyse.getAbcCategory().name();
+                    String category = analyse.getAbcCategory().name();
 
                     abcCategories.put(
                             category,
@@ -193,8 +192,7 @@ public class DashboardService {
                 )
                 .forEach(analyse -> {
 
-                    String category =
-                            analyse.getXyzCategory().name();
+                    String category = analyse.getXyzCategory().name();
 
                     xyzCategories.put(
                             category,
@@ -211,8 +209,7 @@ public class DashboardService {
                 )
                 .forEach(matrix -> {
 
-                    String group =
-                            matrix.getMatrixGroup();
+                    String group = matrix.getMatrixGroup();
 
                     matrixGroups.put(
                             group,
@@ -268,8 +265,7 @@ public class DashboardService {
             User user
     ) {
 
-        List<Customer> customers =
-                customerRepository.findAllByUser(user);
+        List<Customer> customers = customerRepository.findAllByUser(user);
 
         return segmentFilteringService
                 .filterCustomers(

@@ -19,9 +19,6 @@ public class Segment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "segment_id_seq")
     private Long id;
 
-    @Column(name = "segment_name", nullable = false)
-    private String name;
-
     @Column(name = "segment_age_from")
     private Integer ageFrom;
 

@@ -43,6 +43,11 @@ public class DashboardController {
         );
 
         model.addAttribute(
+                "importedFileName",
+                user.getLastImportedFileName()
+        );
+
+        model.addAttribute(
                 "dashboard",
                 null
         );
@@ -101,6 +106,11 @@ public class DashboardController {
         );
 
         model.addAttribute(
+                "importedFileName",
+                user.getLastImportedFileName()
+        );
+
+        model.addAttribute(
                 "charts",
                 dashboard.getCharts()
         );
@@ -145,8 +155,6 @@ public class DashboardController {
         User user = (User) authentication.getPrincipal();
 
         Segment segment = new Segment();
-
-        segment.setName(form.getSegmentName());
 
         segment.setAgeFrom(form.getAgeFrom());
         segment.setAgeTo(form.getAgeTo());
@@ -248,10 +256,6 @@ public class DashboardController {
             Segment segment =
                     dashboard.getSegment();
 
-            form.setSegmentName(
-                    segment.getName()
-            );
-
             form.setAgeFrom(
                     segment.getAgeFrom()
             );
@@ -312,10 +316,6 @@ public class DashboardController {
         Segment segment = dashboard.getSegment();
 
         if (segment != null) {
-
-            segment.setName(
-                    form.getSegmentName()
-            );
 
             segment.setAgeFrom(
                     form.getAgeFrom()

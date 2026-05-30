@@ -1,11 +1,12 @@
 package com.kuzmin.Project_i.repository;
 
-import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.Dashboard;
 import com.kuzmin.Project_i.model.User;
-import com.kuzmin.Project_i.model.XyzAnalyse;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +24,14 @@ public interface DashboardRepository extends PagingAndSortingRepository<Dashboar
     List<Dashboard> findAllByUser(User user);
 
     Optional<Dashboard> findByIdAndUser(Long id, User user);
+
+    @Modifying
+    @Query("""
+        delete from dashboards d
+        where d.user = :user
+    """)
+    void deleteAllByUser(
+            @Param("user") User user
+    );
 
 }

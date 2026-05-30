@@ -5,6 +5,9 @@ import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.model.XyzAnalyse;
 import com.kuzmin.Project_i.model.XyzCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,5 +29,14 @@ public interface XyzAnalyseRepository extends JpaRepository<XyzAnalyse, Long> {
     void deleteAllByCustomerUser(User user);
 
     Optional<XyzAnalyse> findByCustomer(Customer customer);
+
+    @Modifying
+    @Query("""
+        delete from xyz_analysis x
+        where x.customer.user = :user
+    """)
+    void deleteAllByUser(
+            @Param("user") User user
+    );
 
 }

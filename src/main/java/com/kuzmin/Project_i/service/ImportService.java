@@ -3,8 +3,9 @@ package com.kuzmin.Project_i.service;
 import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.Sex;
 import com.kuzmin.Project_i.model.User;
-import com.kuzmin.Project_i.repository.CustomerRepository;
+import com.kuzmin.Project_i.repository.*;
 import com.opencsv.CSVReader;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,9 +19,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ImportService {
 
     private final CustomerRepository customerRepository;
+    private final UserService userService;
+
+    private final UserRepository userRepository;
+    private final DashboardRepository dashboardRepository;
+    private final SegmentRepository segmentRepository;
+
+    private final AbcAnalyseRepository abcAnalyseRepository;
+    private final XyzAnalyseRepository xyzAnalyseRepository;
+    private final RfmAnalyseRepository rfmAnalyseRepository;
+    private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
     public void importCsv(MultipartFile file, User user) {
 
@@ -31,6 +43,20 @@ public class ImportService {
         if (!file.getOriginalFilename().endsWith(".csv")) {
             throw new RuntimeException("Только CSV файлы");
         }
+
+        abcXyzMatrixRepository.deleteAllByUser(user);
+        abcAnalyseRepository.deleteAllByUser(user);
+        xyzAnalyseRepository.deleteAllByUser(user);
+        rfmAnalyseRepository.deleteAllByUser(user);
+        dashboardRepository.deleteAllByUser(user);
+        segmentRepository.deleteAllByUser(user);
+        customerRepository.deleteAllByUser(user);
+
+        user.setLastImportedFileName(
+                file.getOriginalFilename()
+        );
+
+        userRepository.save(user);
 
         try (
                 Reader reader = new BufferedReader(

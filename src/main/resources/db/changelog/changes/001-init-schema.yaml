@@ -82,6 +82,11 @@
                     constraints:
                       nullable: false
 
+                - column:
+                    name: user_last_imported_file_name
+                    type: VARCHAR(100)
+
+
     # =========================
     # CUSTOMERS
     # =========================
@@ -184,12 +189,6 @@
                     defaultValueSequenceNext: segment_id_seq
                     constraints:
                       primaryKey: true
-                      nullable: false
-
-                - column:
-                    name: segment_name
-                    type: VARCHAR(255)
-                    constraints:
                       nullable: false
 
                 - column:

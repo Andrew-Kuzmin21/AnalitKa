@@ -3,6 +3,9 @@ package com.kuzmin.Project_i.repository;
 import com.kuzmin.Project_i.model.Segment;
 import com.kuzmin.Project_i.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,6 +21,15 @@ public interface SegmentRepository extends JpaRepository<Segment, Long> {
     Optional<Segment> findByIdAndUser(
             Long id,
             User user
+    );
+
+    @Modifying
+    @Query("""
+        delete from segments s
+        where s.user = :user
+    """)
+    void deleteAllByUser(
+            @Param("user") User user
     );
 
 }

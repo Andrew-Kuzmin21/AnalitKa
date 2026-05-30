@@ -3,8 +3,11 @@ package com.kuzmin.Project_i.repository;
 import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.Sex;
 import com.kuzmin.Project_i.model.User;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +29,15 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
     Optional<Customer> findByIdAndUser(
             Long id,
             User user
+    );
+
+    @Modifying
+    @Query("""
+        delete from customers c
+        where c.user = :user
+    """)
+    void deleteAllByUser(
+            @Param("user") User user
     );
 
 }

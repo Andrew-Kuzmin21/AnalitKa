@@ -32,6 +32,9 @@ public class User implements UserDetails {
     @Column(name = "user_password", length = 100, nullable = false)
     private String password;
 
+    @Column(name = "user_last_imported_file_name", length = 100)
+    private String lastImportedFileName;
+
     @OneToMany(mappedBy = "user")
     private List<Dashboard> dashboards;
 

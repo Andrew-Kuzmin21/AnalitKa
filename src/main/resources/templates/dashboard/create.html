@@ -42,6 +42,8 @@
 </head>
 
 <body>
+
+<a class="main__back" href="/dashboards">Sign in</a>
 <div class="card">
 
     <h1 th:text="${dashboardId != null}
@@ -65,10 +67,6 @@
                placeholder="Описание">
 
         <h3>Сегмент</h3>
-
-        <input type="text"
-               th:field="*{segmentName}"
-               placeholder="Название сегмента">
 
         <input type="number"
                th:field="*{ageFrom}"
@@ -108,10 +106,6 @@
                placeholder="Описание">
 
         <h3>Сегмент</h3>
-
-        <input type="text"
-               th:field="*{segmentName}"
-               placeholder="Название сегмента">
 
         <input type="number"
                th:field="*{ageFrom}"
