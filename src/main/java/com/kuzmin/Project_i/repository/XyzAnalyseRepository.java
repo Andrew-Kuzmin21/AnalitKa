@@ -13,6 +13,10 @@ import java.util.Optional;
 @Repository
 public interface XyzAnalyseRepository extends JpaRepository<XyzAnalyse, Long> {
 
+    List<XyzAnalyse> findAllByCustomerIn(
+            List<Customer> customers
+    );
+
     List<XyzAnalyse> findByCustomerId(Long customerId);
 
     List<XyzAnalyse> findByXyzCategory(XyzCategory category);

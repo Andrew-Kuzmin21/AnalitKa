@@ -11,6 +11,8 @@ import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +25,31 @@ public class DashboardService {
     private final XyzAnalyseRepository xyzAnalyseRepository;
     private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
-    public DashboardStatisticsDto getStatistics(User user) {
+    public DashboardStatisticsDto getStatistics(
+            Dashboard dashboard
+    ) {
 
-        List<Customer> customers = customerRepository.findAllByUser(user);
+        List<Customer> customers;
 
-        List<RfmAnalyse> rfmAnalyses = rfmAnalyseRepository.findAllByCustomerUser(user);
+        if (dashboard.getSegment() == null) {
+
+            customers =
+                    customerRepository.findAllByUser(
+                            dashboard.getUser()
+                    );
+
+        } else {
+            customers =
+                    getCustomersBySegment(
+                            dashboard.getSegment(),
+                            dashboard.getUser()
+                    );
+        }
+
+        List<RfmAnalyse> rfmAnalyses =
+                rfmAnalyseRepository.findAllByCustomerIn(
+                        customers
+                );
 
         DashboardStatisticsDto dto = new DashboardStatisticsDto();
 
@@ -43,6 +65,7 @@ public class DashboardService {
         BigDecimal averageCheck =
                 customers.stream()
                         .map(Customer::getAverageCheck)
+                        .filter(java.util.Objects::nonNull)
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (!customers.isEmpty()) {
@@ -140,9 +163,13 @@ public class DashboardService {
         abcCategories.put("B", 0L);
         abcCategories.put("C", 0L);
 
-        abcAnalyseRepository.findAllByCustomerUser(user)
+        abcAnalyseRepository.findAllByCustomerIn(
+                        customers
+                )
                 .forEach(analyse -> {
-                    String category = analyse.getAbcCategory().name();
+
+                    String category =
+                            analyse.getAbcCategory().name();
 
                     abcCategories.put(
                             category,
@@ -159,9 +186,13 @@ public class DashboardService {
         xyzCategories.put("Y", 0L);
         xyzCategories.put("Z", 0L);
 
-        xyzAnalyseRepository.findAllByCustomerUser(user)
+        xyzAnalyseRepository.findAllByCustomerIn(
+                        customers
+                )
                 .forEach(analyse -> {
-                    String category = analyse.getXyzCategory().name();
+
+                    String category =
+                            analyse.getXyzCategory().name();
 
                     xyzCategories.put(
                             category,
@@ -173,9 +204,13 @@ public class DashboardService {
 
         Map<String, Long> matrixGroups = new LinkedHashMap<>();
 
-        abcXyzMatrixRepository.findAllByCustomerUser(user)
+        abcXyzMatrixRepository.findAllByCustomerIn(
+                        customers
+                )
                 .forEach(matrix -> {
-                    String group = matrix.getMatrixGroup();
+
+                    String group =
+                            matrix.getMatrixGroup();
 
                     matrixGroups.put(
                             group,
@@ -225,4 +260,118 @@ public class DashboardService {
                 .orElseThrow(() ->
                         new RuntimeException("Dashboard not found"));
     }
+
+    private List<Customer> getCustomersBySegment(
+            Segment segment,
+            User user
+    ) {
+
+        List<Customer> customers =
+                customerRepository.findAllByUser(user);
+
+        return customers.stream()
+
+                .filter(customer ->
+                        segment.getAgeFrom() == null
+                                || customer.getAge() >= segment.getAgeFrom()
+                )
+
+                .filter(customer ->
+                        segment.getAgeTo() == null
+                                || customer.getAge() <= segment.getAgeTo()
+                )
+
+                .filter(customer ->
+                        segment.getSex() == null
+                                || segment.getSex().isBlank()
+                                || customer.getSex().name()
+                                .equals(segment.getSex())
+                )
+
+                .filter(customer ->
+                        segment.getRegion() == null
+                                || segment.getRegion().isBlank()
+                                || customer.getRegion()
+                                .equalsIgnoreCase(segment.getRegion())
+                )
+
+                .filter(customer ->
+                        segment.getDateOfRegistrationFrom() == null
+                                || !customer.getDateOfRegistration()
+                                .isBefore(
+                                        segment.getDateOfRegistrationFrom()
+                                )
+                )
+
+                .filter(customer ->
+                        segment.getDateOfRegistrationTo() == null
+                                || !customer.getDateOfRegistration()
+                                .isAfter(
+                                        segment.getDateOfRegistrationTo()
+                                )
+                )
+
+                .filter(customer ->
+                        segment.getCountOfOrdersFrom() == null
+                                || customer.getCountOfOrders()
+                                >= segment.getCountOfOrdersFrom()
+                )
+
+                .filter(customer ->
+                        segment.getCountOfOrdersTo() == null
+                                || customer.getCountOfOrders()
+                                <= segment.getCountOfOrdersTo()
+                )
+
+                .filter(customer ->
+                        segment.getAverageCheckFrom() == null
+                                || customer.getAverageCheck().doubleValue()
+                                >= segment.getAverageCheckFrom()
+                )
+
+                .filter(customer ->
+                        segment.getAverageCheckTo() == null
+                                || customer.getAverageCheck().doubleValue()
+                                <= segment.getAverageCheckTo()
+                )
+
+                .filter(customer ->
+                        segment.getTotalSpendsFrom() == null
+                                || customer.getTotalSpent().doubleValue()
+                                >= segment.getTotalSpendsFrom()
+                )
+
+                .filter(customer ->
+                        segment.getTotalSpendsTo() == null
+                                || customer.getTotalSpent().doubleValue()
+                                <= segment.getTotalSpendsTo()
+                )
+
+                .filter(customer ->
+                        segment.getLastOrderDateFrom() == null
+                                || (
+                                customer.getLastOrderDate() != null
+                                        &&
+                                        !customer.getLastOrderDate()
+                                                .isBefore(
+                                                        segment.getLastOrderDateFrom()
+                                                )
+                        )
+                )
+
+                .filter(customer ->
+                        segment.getLastOrderDateTo() == null
+                                || (
+                                customer.getLastOrderDate() != null
+                                        &&
+                                        !customer.getLastOrderDate()
+                                                .isAfter(
+                                                        segment.getLastOrderDateTo()
+                                                )
+                        )
+                )
+
+                .toList();
+    }
+
 }

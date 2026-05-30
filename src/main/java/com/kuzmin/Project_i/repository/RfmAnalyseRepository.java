@@ -1,5 +1,6 @@
 package com.kuzmin.Project_i.repository;
 
+import com.kuzmin.Project_i.model.Customer;
 import com.kuzmin.Project_i.model.RfmAnalyse;
 import com.kuzmin.Project_i.model.RfmSegment;
 import com.kuzmin.Project_i.model.User;
@@ -10,6 +11,10 @@ import java.util.List;
 
 @Repository
 public interface RfmAnalyseRepository extends JpaRepository<RfmAnalyse, Long> {
+
+    List<RfmAnalyse> findAllByCustomerIn(
+            List<Customer> customers
+    );
 
     List<RfmAnalyse> findByCustomerId(Long customerId);
 

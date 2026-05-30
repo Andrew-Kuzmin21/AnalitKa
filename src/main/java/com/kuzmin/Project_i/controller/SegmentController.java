@@ -1,5 +1,6 @@
 package com.kuzmin.Project_i.controller;
 import com.kuzmin.Project_i.model.Segment;
+import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.service.SegmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/segments")
 public class SegmentController {
     private final SegmentService segmentService;
+
     public SegmentController(SegmentService segmentService) {
         this.segmentService = segmentService;
     }
@@ -33,9 +35,13 @@ public class SegmentController {
 
     @PostMapping("/create")
     public String create(
-            @ModelAttribute Segment segment
+            @ModelAttribute Segment segment,
+            User user
     ) {
+        segment.setUser(user);
+
         segmentService.save(segment);
+
         return "redirect:/segments";
     }
 }

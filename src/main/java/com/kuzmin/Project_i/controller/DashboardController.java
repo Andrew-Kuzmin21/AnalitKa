@@ -1,13 +1,19 @@
 package com.kuzmin.Project_i.controller;
 
+import com.kuzmin.Project_i.dto.DashboardFormDto;
+import com.kuzmin.Project_i.dto.DashboardStatisticsDto;
 import com.kuzmin.Project_i.model.Dashboard;
+import com.kuzmin.Project_i.model.Segment;
 import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.service.DashboardService;
+import com.kuzmin.Project_i.service.SegmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/dashboards")
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+    private final SegmentService segmentService;
 
     @GetMapping
     public String dashboard(
@@ -24,15 +31,51 @@ public class DashboardController {
 
         User user = (User) authentication.getPrincipal();
 
+        List<Dashboard> dashboards =
+                dashboardService.findAllByUser(user);
+
         model.addAttribute(
                 "dashboards",
-                dashboardService.findAllByUser(user)
+                dashboards
+        );
+
+        model.addAttribute(
+                "dashboard",
+                null
+        );
+
+        model.addAttribute(
+                "charts",
+                List.of()
         );
 
         model.addAttribute(
                 "stats",
-                dashboardService.getStatistics(user)
+                new DashboardStatisticsDto()
         );
+
+        if (!dashboards.isEmpty()) {
+
+            Dashboard dashboard =
+                    dashboards.getFirst();
+
+            model.addAttribute(
+                    "dashboard",
+                    dashboard
+            );
+
+            model.addAttribute(
+                    "charts",
+                    dashboard.getCharts()
+            );
+
+            model.addAttribute(
+                    "stats",
+                    dashboardService.getStatistics(
+                            dashboard
+                    )
+            );
+        }
 
         return "dashboard/index";
     }
@@ -63,7 +106,9 @@ public class DashboardController {
 
         model.addAttribute(
                 "stats",
-                dashboardService.getStatistics(user)
+                dashboardService.getStatistics(
+                        dashboard
+                )
         );
 
         return "dashboard/index";
@@ -71,9 +116,10 @@ public class DashboardController {
 
     @GetMapping("/create")
     public String createPage(Model model) {
+
         model.addAttribute(
-                "dashboard",
-                new Dashboard()
+                "dashboardForm",
+                new DashboardFormDto()
         );
 
         return "dashboard/create";
@@ -81,13 +127,80 @@ public class DashboardController {
 
     @PostMapping("/create")
     public String create(
-            @ModelAttribute Dashboard dashboard,
+            @ModelAttribute DashboardFormDto form,
             Authentication authentication
     ) {
 
         User user = (User) authentication.getPrincipal();
 
+        Segment segment = new Segment();
+
+        segment.setName(form.getSegmentName());
+
+        segment.setAgeFrom(form.getAgeFrom());
+        segment.setAgeTo(form.getAgeTo());
+
+        segment.setSex(form.getSex());
+
+        segment.setRegion(form.getRegion());
+
+        segment.setDateOfRegistrationFrom(
+                form.getDateOfRegistrationFrom()
+        );
+
+        segment.setDateOfRegistrationTo(
+                form.getDateOfRegistrationTo()
+        );
+
+        segment.setCountOfOrdersFrom(
+                form.getCountOfOrdersFrom()
+        );
+
+        segment.setCountOfOrdersTo(
+                form.getCountOfOrdersTo()
+        );
+
+        segment.setAverageCheckFrom(
+                form.getAverageCheckFrom()
+        );
+
+        segment.setAverageCheckTo(
+                form.getAverageCheckTo()
+        );
+
+        segment.setTotalSpendsFrom(
+                form.getTotalSpendsFrom()
+        );
+
+        segment.setTotalSpendsTo(
+                form.getTotalSpendsTo()
+        );
+
+        segment.setLastOrderDateFrom(
+                form.getLastOrderDateFrom()
+        );
+
+        segment.setLastOrderDateTo(
+                form.getLastOrderDateTo()
+        );
+
+        segment.setUser(user);
+
+        segmentService.save(segment);
+
+        Dashboard dashboard = new Dashboard();
+
+        dashboard.setName(
+                form.getDashboardName()
+        );
+
+        dashboard.setDescription(
+                form.getDashboardDescription()
+        );
+
         dashboard.setUser(user);
+
+        dashboard.setSegment(segment);
 
         dashboardService.save(dashboard);
 

@@ -193,12 +193,60 @@
                       nullable: false
 
                 - column:
-                    name: segment_description
+                    name: segment_age_from
+                    type: INTEGER
+
+                - column:
+                    name: segment_age_to
+                    type: INTEGER
+
+                - column:
+                    name: segment_sex
                     type: TEXT
 
                 - column:
-                    name: segment_filter_query
+                    name: segment_region
                     type: TEXT
+
+                - column:
+                    name: segment_date_of_registration_from
+                    type: DATE
+
+                - column:
+                    name: segment_date_of_registration_to
+                    type: DATE
+
+                - column:
+                    name: segment_count_of_orders_from
+                    type: INTEGER
+
+                - column:
+                    name: segment_count_of_orders_to
+                    type: INTEGER
+
+                - column:
+                    name: segment_average_check_from
+                    type: DOUBLE
+
+                - column:
+                    name: segment_average_check_to
+                    type: DOUBLE
+
+                - column:
+                    name: segment_total_spends_from
+                    type: DOUBLE
+
+                - column:
+                    name: segment_total_spends_to
+                    type: DOUBLE
+
+                - column:
+                    name: segment_last_order_date_from
+                    type: DATE
+
+                - column:
+                    name: segment_last_order_date_to
+                    type: DATE
 
                 - column:
                     name: segment_creation_date
