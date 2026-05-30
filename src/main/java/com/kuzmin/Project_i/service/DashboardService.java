@@ -1,5 +1,6 @@
 package com.kuzmin.Project_i.service;
 
+import com.kuzmin.Project_i.dto.DashboardFormDto;
 import com.kuzmin.Project_i.dto.DashboardStatisticsDto;
 import com.kuzmin.Project_i.model.*;
 import com.kuzmin.Project_i.repository.*;
@@ -372,6 +373,24 @@ public class DashboardService {
                 )
 
                 .toList();
+    }
+
+    public Dashboard update(
+            Dashboard dashboard,
+            DashboardFormDto form
+    ) {
+
+        dashboard.setName(
+                form.getDashboardName()
+        );
+
+        dashboard.setDescription(
+                form.getDashboardDescription()
+        );
+
+        return dashboardRepository.save(
+                dashboard
+        );
     }
 
 }

@@ -122,6 +122,10 @@ public class CustomerController {
             Model model,
             Authentication authentication
     ) {
+        if (authentication == null) {
+            return "redirect:/login";
+        }
+
         User user = (User) authentication.getPrincipal();
 
         model.addAttribute(
@@ -138,6 +142,10 @@ public class CustomerController {
             @ModelAttribute Customer customer,
             Authentication authentication
     ) {
+        if (authentication == null) {
+            return "redirect:/login";
+        }
+
         User user = (User) authentication.getPrincipal();
 
         customer.setId(id);

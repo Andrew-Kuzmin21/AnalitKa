@@ -40,12 +40,20 @@
         }
     </style>
 </head>
+
 <body>
 <div class="card">
-    <h1>Create Dashboard</h1>
-    <form th:action="@{/dashboards/create}"
+
+    <h1 th:text="${dashboardId != null}
+        ? 'Edit Dashboard'
+        : 'Create Dashboard'">
+    </h1>
+
+    <form th:if="${isEdit}"
+          th:action="@{/dashboards/{id}/edit(id=${dashboardId})}"
           th:object="${dashboardForm}"
           method="post">
+
         <h3>Дашборд</h3>
 
         <input type="text"
@@ -81,7 +89,52 @@
         <button type="submit">
             Создать
         </button>
+
     </form>
+
+    <form th:unless="${isEdit}"
+          th:action="@{/dashboards/create}"
+          th:object="${dashboardForm}"
+          method="post">
+
+        <h3>Дашборд</h3>
+
+        <input type="text"
+               th:field="*{dashboardName}"
+               placeholder="Название дашборда">
+
+        <input type="text"
+               th:field="*{dashboardDescription}"
+               placeholder="Описание">
+
+        <h3>Сегмент</h3>
+
+        <input type="text"
+               th:field="*{segmentName}"
+               placeholder="Название сегмента">
+
+        <input type="number"
+               th:field="*{ageFrom}"
+               placeholder="Возраст от">
+
+        <input type="number"
+               th:field="*{ageTo}"
+               placeholder="Возраст до">
+
+        <input type="text"
+               th:field="*{sex}"
+               placeholder="Пол">
+
+        <input type="text"
+               th:field="*{region}"
+               placeholder="Регион">
+
+        <button type="submit">
+            Создать
+        </button>
+
+    </form>
+
 </div>
 </body>
 </html>

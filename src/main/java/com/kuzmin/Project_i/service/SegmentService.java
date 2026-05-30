@@ -44,4 +44,8 @@ public class SegmentService {
                 .orElseThrow();
     }
 
+    public void deleteById(Long id) {
+        segmentRepository.deleteById(id);
+    }
+
 }

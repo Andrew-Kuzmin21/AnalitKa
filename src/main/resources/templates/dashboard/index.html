@@ -115,6 +115,7 @@
     </style>
 </head>
 <body>
+
 <header>
     <div class="header-left">
         <form th:action="@{/customers/import}"
@@ -137,16 +138,52 @@
         </button>
     </form>
 </header>
+
 <div class="layout">
     <aside class="sidebar">
         <h2>Dashboards</h2>
-        <div th:each="dashboard : ${dashboards}">
+        <div th:each="dashboard : ${dashboards}"
+             style="margin-bottom:15px;">
+
             <a class="dashboard-link"
                th:href="@{'/dashboards/' + ${dashboard.id}}"
                th:text="${dashboard.name}">
             </a>
+
+            <div style="
+        display:flex;
+        gap:8px;
+        margin-top:5px;
+    ">
+
+                <a th:href="@{'/dashboards/' + ${dashboard.id} + '/edit'}">
+                    <button style="
+                background:#f59e0b;
+                color:white;
+            ">
+                        Edit
+                    </button>
+                </a>
+
+                <form th:action="@{'/dashboards/' + ${dashboard.id} + '/delete'}"
+                      method="post"
+                      onsubmit="return confirm('Delete dashboard?');">
+
+                    <button type="submit"
+                            style="
+                        background:#ef4444;
+                        color:white;
+                    ">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
     </aside>
+
     <main>
         <h1 style="margin-bottom: 25px;">
             Customer Analytics Dashboard
