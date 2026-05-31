@@ -31,6 +31,14 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
             User user
     );
 
+    @Query("""
+       select distinct c.region
+       from customers c
+       where c.region is not null
+       order by c.region
+       """)
+    List<String> findDistinctRegions();
+
     @Modifying
     @Query("""
         delete from customers c

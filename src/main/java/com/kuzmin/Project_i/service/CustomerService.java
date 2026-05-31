@@ -45,4 +45,8 @@ public class CustomerService {
                 .orElseThrow();
     }
 
+    public List<String> findDistinctRegions() {
+        return customerRepository.findDistinctRegions();
+    }
+
 }

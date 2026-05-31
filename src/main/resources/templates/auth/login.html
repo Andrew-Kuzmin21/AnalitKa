@@ -2,10 +2,62 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Login</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+    header {
+      height: 70px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 25px;
+    }
+    .header__logo {
+      width: 100px;
+      height: 50px;
+      background: #f59e0b;
+    }
+    .header__logo__title {
+      font-size: 20px;
+      font-style: italic;
+      color: #fff;
+    }
+    main {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+    }
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Login</h2>
+<header>
+  <div class="header__logo">
+    <p class="header__logo__title">АналитКа</p>
+  </div>
+</header>
+
+<h2>Вход</h2>
 
 <form th:action="@{/login}" method="post">
   <div>
@@ -14,18 +66,18 @@
   </div>
 
   <div>
-    <label>Password:</label>
+    <label>Пароль:</label>
     <input type="password" name="password">
   </div>
 
-  <button type="submit">Login</button>
+  <button type="submit">Войди</button>
 </form>
 
 <div th:if="${param.error}">
-  Invalid email or password
+  Не верная почта или пароль
 </div>
 
-<a class="main__prev" href="/registration">Sign up</a>
+<a class="main__prev" href="/registration">Регистрация</a>
 
 </body>
 </html>

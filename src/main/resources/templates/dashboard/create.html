@@ -43,52 +43,10 @@
 
 <body>
 
-<a class="main__back" href="/dashboards">Sign in</a>
+<a class="main__back" href="/dashboards">Назад</a>
 <div class="card">
 
-    <h1 th:text="${dashboardId != null}
-        ? 'Edit Dashboard'
-        : 'Create Dashboard'">
-    </h1>
-
-    <form th:if="${isEdit}"
-          th:action="@{/dashboards/{id}/edit(id=${dashboardId})}"
-          th:object="${dashboardForm}"
-          method="post">
-
-        <h3>Дашборд</h3>
-
-        <input type="text"
-               th:field="*{dashboardName}"
-               placeholder="Название дашборда">
-
-        <input type="text"
-               th:field="*{dashboardDescription}"
-               placeholder="Описание">
-
-        <h3>Сегмент</h3>
-
-        <input type="number"
-               th:field="*{ageFrom}"
-               placeholder="Возраст от">
-
-        <input type="number"
-               th:field="*{ageTo}"
-               placeholder="Возраст до">
-
-        <input type="text"
-               th:field="*{sex}"
-               placeholder="Пол">
-
-        <input type="text"
-               th:field="*{region}"
-               placeholder="Регион">
-
-        <button type="submit">
-            Создать
-        </button>
-
-    </form>
+    <h1>Create Dashboard</h1>
 
     <form th:unless="${isEdit}"
           th:action="@{/dashboards/create}"
@@ -123,9 +81,7 @@
                th:field="*{region}"
                placeholder="Регион">
 
-        <button type="submit">
-            Создать
-        </button>
+        <button type="submit">Создать</button>
 
     </form>
 

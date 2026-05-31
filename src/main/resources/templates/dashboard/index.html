@@ -126,6 +126,70 @@
             background: #ef4444;
             color: white;
         }
+
+        .content-area {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .settings-panel {
+            width: 10vw;
+            min-width: 220px;
+            max-width: 260px;
+
+            background: white;
+            border-left: 1px solid #ddd;
+
+            overflow-y: auto;
+
+            transition: transform .3s ease;
+
+            position: relative;
+        }
+
+        .settings-panel.closed {
+            transform: translateX(100%);
+        }
+
+        .panel-toggle {
+            position: absolute;
+
+            left: -50px;
+            top: 20px;
+
+            width: 50px;
+            height: 50px;
+
+            background: #2563eb;
+            color: white;
+
+            border-radius: 12px 0 0 12px;
+        }
+
+        .settings-content {
+            padding: 20px;
+        }
+
+        .settings-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .settings-group {
+            margin-bottom: 30px;
+        }
+
+        .settings-group h3 {
+            margin-bottom: 10px;
+        }
+
+        .settings-group input,
+        .settings-group select,
+        .settings-group textarea {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
@@ -187,20 +251,10 @@
             </a>
 
             <div style="
-        display:flex;
-        gap:8px;
-        margin-top:5px;
-    ">
-
-                <a th:href="@{'/dashboards/' + ${dashboard.id} + '/edit'}">
-                    <button style="
-                background:#f59e0b;
-                color:white;
+                display:flex;
+                gap:8px;
+                margin-top:5px;
             ">
-                        Edit
-                    </button>
-                </a>
-
                 <form th:action="@{'/dashboards/' + ${dashboard.id} + '/delete'}"
                       method="post"
                       onsubmit="return confirm('Delete dashboard?');">
@@ -215,7 +269,6 @@
 
                 </form>
             </div>
-
         </div>
     </aside>
 
@@ -266,45 +319,6 @@
                 <h2>Age Groups</h2>
                 <canvas id="ageChart"></canvas>
             </div>
-
-            <div>
-                <h5>ABC Analysis</h5>
-                <input type="number"
-                       step="0.01"
-                       name="abcCategoryABorder">
-                <input type="number"
-                       step="0.01"
-                       name="abcCategoryBBorder">
-
-                <h5>XYZ Analysis</h5>
-                <input type="number"
-                       step="0.01"
-                       name="xyzCategoryXBorder">
-                <input type="number"
-                       step="0.01"
-                       name="xyzCategoryYBorder">
-
-                <h5>RFM Analysis</h5>
-                <input name="recency5">
-                <input name="recency4">
-                <input name="recency3">
-                <input name="recency2">
-
-                <input name="frequency2">
-                <input name="frequency3">
-                <input name="frequency4">
-                <input name="frequency5">
-
-                <input name="monetary2">
-                <input name="monetary3">
-                <input name="monetary4">
-                <input name="monetary5">
-            </div>
-
-            <div class="chart-card">
-                <h2>RFM Segments</h2>
-                <canvas id="rfmChart"></canvas>
-            </div>
             <div class="chart-card">
                 <h2>ABC Analysis</h2>
                 <canvas id="abcChart"></canvas>
@@ -312,6 +326,10 @@
             <div class="chart-card">
                 <h2>XYZ Analysis</h2>
                 <canvas id="xyzChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>RFM Segments</h2>
+                <canvas id="rfmChart"></canvas>
             </div>
             <div class="chart-card">
                 <h2>ABC/XYZ Matrix</h2>
@@ -330,6 +348,183 @@
             </div>
         </div>
     </main>
+
+    <aside id="settingsPanel"
+           class="settings-panel">
+
+        <button
+                id="toggleButton"
+                class="panel-toggle"
+                type="button"
+                onclick="toggleSettingsPanel()">
+            →
+        </button>
+
+        <div class="settings-content">
+
+            <h2>Dashboard Settings</h2>
+            <form
+                    th:action="@{'/dashboards/' + ${dashboard.id} + '/settings'}"
+                    method="post">
+
+                <div class="settings-group">
+                    <h3>Dashboard</h3>
+
+                    <input name="dashboardName" th:value="${dashboard?.name}" placeholder="Name">
+                    <textarea name="dashboardDescription" placeholder="Description" th:text="${dashboard.description}"></textarea>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Segment</h3>
+
+                    <label>Age From</label>
+                    <input
+                            type="number"
+                            name="ageFrom"
+                            th:value="${segment?.ageFrom}">
+
+                    <label>Age To</label>
+                    <input
+                            type="number"
+                            name="ageTo"
+                            th:value="${segment?.ageTo}">
+
+                    <label>Sex</label>
+                    <select name="sex">
+                        <option value="">Any</option>
+                        <option value="м">Мужчины</option>
+                        <option value="ж">Женщины</option>
+                    </select>
+
+                    <label>Region</label>
+                    <select name="region">
+
+                        <option value="">Все регионы</option>
+
+                        <option th:each="regionValue : ${regions}"
+                                th:value="${regionValue}"
+                                th:text="${regionValue}"
+                                th:selected="${segment?.region == regionValue}">
+                        </option>
+
+                    </select>
+
+                    <label>Registration From</label>
+                    <input
+                            type="date"
+                            name="dateOfRegistrationFrom"
+                            th:value="${segment?.dateOfRegistrationFrom}">
+
+                    <label>Registration To</label>
+                    <input
+                            type="date"
+                            name="dateOfRegistrationTo"
+                            th:value="${segment?.dateOfRegistrationTo}">
+
+                    <label>Orders From</label>
+                    <input
+                            type="number"
+                            name="countOfOrdersFrom"
+                            th:value="${segment?.countOfOrdersFrom}">
+
+                    <label>Orders To</label>
+                    <input
+                            type="number"
+                            name="countOfOrdersTo"
+                            th:value="${segment?.countOfOrdersTo}">
+
+                    <label>Average Check From</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            name="averageCheckFrom"
+                            th:value="${segment?.averageCheckFrom}">
+
+                    <label>Average Check To</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            name="averageCheckTo"
+                            th:value="${segment?.averageCheckTo}">
+
+                    <label>Total Spends From</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            name="totalSpendsFrom"
+                            th:value="${segment?.totalSpendsFrom}">
+
+                    <label>Total Spends To</label>
+                    <input
+                            type="number"
+                            step="0.01"
+                            name="totalSpendsTo"
+                            th:value="${segment?.totalSpendsTo}">
+
+                    <label>Last Order From</label>
+                    <input
+                            type="date"
+                            name="lastOrderDateFrom"
+                            th:value="${segment?.lastOrderDateFrom}">
+
+                    <label>Last Order To</label>
+                    <input
+                            type="date"
+                            name="lastOrderDateTo"
+                            th:value="${segment?.lastOrderDateTo}">
+                </div>
+
+                <div class="settings-group">
+                    <h3>ABC Analysis</h3>
+
+                    <input th:value="${settings.abcCategoryABorder}" name="abcCategoryABorder">
+                    <input th:value="${settings.abcCategoryBBorder}" name="abcCategoryBBorder">
+                </div>
+
+                <div class="settings-group">
+                    <h3>XYZ Analysis</h3>
+
+                    <input th:value="${settings.xyzCategoryXBorder}" name="xyzCategoryXBorder">
+                    <input th:value="${settings.xyzCategoryYBorder}" name="xyzCategoryYBorder">
+                </div>
+
+                <div class="settings-group">
+                    <h3>RFM Recency</h3>
+
+                    <input name="recency5" th:value="${settings.recency5}">
+                    <input name="recency4" th:value="${settings.recency4}">
+                    <input name="recency3" th:value="${settings.recency3}">
+                    <input name="recency2" th:value="${settings.recency2}">
+                </div>
+
+                <div class="settings-group">
+                    <h3>RFM Frequency</h3>
+
+                    <input name="frequency2" th:value="${settings.frequency2}">
+                    <input name="frequency3" th:value="${settings.frequency3}">
+                    <input name="frequency4" th:value="${settings.frequency4}">
+                    <input name="frequency5" th:value="${settings.frequency5}">
+                </div>
+
+                <div class="settings-group">
+                    <h3>RFM Monetary</h3>
+
+                    <input name="monetary2" th:value="${settings.monetary2}">
+                    <input name="monetary3" th:value="${settings.monetary3}">
+                    <input name="monetary4" th:value="${settings.monetary4}">
+                    <input name="monetary5" th:value="${settings.monetary5}">
+                </div>
+
+                <div style="
+                    margin-top:20px;
+                    display:flex;
+                    justify-content:center;
+                ">
+                    <button type="submit" class="primary-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </aside>
 </div>
 
 <script th:inline="javascript">
@@ -435,6 +630,33 @@
             region + ": " + count + " customers"
         );
     });
+
+    function toggleSettingsPanel() {
+
+        const panel =
+            document.getElementById(
+                "settingsPanel"
+            );
+
+        const button =
+            document.getElementById(
+                "toggleButton"
+            );
+
+        panel.classList.toggle(
+            "closed"
+        );
+
+        if (
+            panel.classList.contains(
+                "closed"
+            )
+        ) {
+            button.innerHTML = "←";
+        } else {
+            button.innerHTML = "→";
+        }
+    }
 </script>
 </body>
 </html>
