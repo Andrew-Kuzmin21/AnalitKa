@@ -26,6 +26,7 @@ public class ImportService {
     private final UserRepository userRepository;
     private final DashboardRepository dashboardRepository;
     private final SegmentRepository segmentRepository;
+    private final DashboardSettingsRepository dashboardSettingsRepository;
 
     public void importCsv(MultipartFile file, User user) {
 
@@ -37,9 +38,12 @@ public class ImportService {
             throw new RuntimeException("Только CSV файлы");
         }
 
-        dashboardRepository.deleteAllByUser(user);
-        segmentRepository.deleteAllByUser(user);
         customerRepository.deleteAllByUser(user);
+
+        dashboardSettingsRepository.deleteAllByUser(user);
+        dashboardRepository.deleteAllByUser(user);
+
+        segmentRepository.deleteAllByUser(user);
 
         user.setLastImportedFileName(
                 file.getOriginalFilename()
