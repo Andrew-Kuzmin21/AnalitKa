@@ -1,83 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>Login</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-    }
-    header {
-      height: 70px;
-      background: white;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 25px;
-    }
-    .header__logo {
-      width: 100px;
-      height: 50px;
-      background: #f59e0b;
-    }
-    .header__logo__title {
-      font-size: 20px;
-      font-style: italic;
-      color: #fff;
-    }
-    main {
-      flex: 1;
-      padding: 25px;
-      overflow-y: auto;
-    }
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-    }
-    button {
-      cursor: pointer;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
-<body>
 
+<body>
 <header>
   <div class="header__logo">
     <p class="header__logo__title">АналитКа</p>
   </div>
 </header>
 
-<h2>Вход</h2>
+<div class="auth-page">
 
-<form th:action="@{/login}" method="post">
-  <div>
-    <label>Email:</label>
-    <input type="email" name="username">
+  <div class="auth-card">
+
+    <h1>АналитКа</h1>
+
+    <form th:action="@{/login}" method="post">
+
+      <div class="auth-group">
+        <label>Email</label>
+        <input type="email" name="username" required>
+      </div>
+
+      <div class="auth-group">
+        <label>Пароль</label>
+        <input type="password" name="password" required>
+      </div>
+
+      <button class="auth-submit" type="submit">
+        Войти
+      </button>
+
+    </form>
+
+    <div th:if="${param.error}"
+         style="margin-top:15px;color:red;text-align:center;">
+      Неверный email или пароль
+    </div>
+
+    <a href="/registration" class="auth-link">
+      Создать аккаунт
+    </a>
+
   </div>
 
-  <div>
-    <label>Пароль:</label>
-    <input type="password" name="password">
-  </div>
-
-  <button type="submit">Войди</button>
-</form>
-
-<div th:if="${param.error}">
-  Не верная почта или пароль
 </div>
-
-<a class="main__prev" href="/registration">Регистрация</a>
 
 </body>
 </html>

@@ -1,79 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>Регистрация</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-    }
-    header {
-      height: 70px;
-      background: white;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 25px;
-    }
-    .header__logo {
-      width: 100px;
-      height: 50px;
-      background: #f59e0b;
-    }
-    .header__logo__title {
-      font-size: 20px;
-      font-style: italic;
-      color: #fff;
-    }
-    main {
-      flex: 1;
-      padding: 25px;
-      overflow-y: auto;
-    }
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-    }
-    button {
-      cursor: pointer;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
-
 <header>
   <div class="header__logo">
     <p class="header__logo__title">АналитКа</p>
   </div>
 </header>
 
-<h2>Регистрация</h2>
+<div class="auth-page">
 
-<form th:action="@{/registration}" method="post" th:object="${user}">
-  <div>
-    <label>Email:</label>
-    <input type="email" th:field="*{email}">
+  <div class="auth-card">
+
+    <h1>Регистрация</h1>
+
+    <form th:action="@{/registration}"
+          method="post"
+          th:object="${user}">
+
+      <div class="auth-group">
+        <label>Email</label>
+        <input type="email" th:field="*{email}" required>
+      </div>
+
+      <div class="auth-group">
+        <label>Пароль</label>
+        <input type="password" th:field="*{password}" required>
+      </div>
+
+      <button class="auth-submit" type="submit">
+        Зарегистрироваться
+      </button>
+
+    </form>
+
+    <a href="/login" class="auth-link">
+      Уже есть аккаунт
+    </a>
+
   </div>
 
-  <div>
-    <label>Пароль:</label>
-    <input type="password" th:field="*{password}">
-  </div>
-
-  <button type="submit">Зарегистрироваться</button>
-</form>
-
-<a class="main__prev" href="/login">Уже есть аккаунт</a>
+</div>
 
 </body>
 </html>

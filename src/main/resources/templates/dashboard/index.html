@@ -27,10 +27,14 @@
             justify-content: space-between;
             padding: 0 25px;
         }
+        .header {
+            display: flex;
+        }
         .header__logo {
             width: 100px;
             height: 50px;
             background: #f59e0b;
+            margin-right: 50px;
         }
         .header__logo__title {
             font-size: 20px;
@@ -240,6 +244,10 @@
             margin-bottom: 10px;
         }
 
+        .settings__label {
+            margin-bottom: 5px;
+        }
+
         .settings-group input,
         .settings-group select,
         .settings-group textarea {
@@ -252,23 +260,25 @@
 <body>
 
 <header>
-    <div class="header__logo">
-        <p class="header__logo__title">АналитКа</p>
-    </div>
+   <div class="header">
+       <div class="header__logo">
+           <p class="header__logo__title">АналитКа</p>
+       </div>
 
-    <div class="header-left">
-        <form th:action="@{/customers/import}"
-              method="post"
-              enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button type="submit" class="primary-btn">Import CSV</button>
-        </form>
+       <div class="header-left">
+           <form th:action="@{/customers/import}"
+                 method="post"
+                 enctype="multipart/form-data">
+               <input type="file" name="file" required>
+               <button type="submit" class="primary-btn">Импорт CSV</button>
+           </form>
 
-        <button class="primary-btn" onclick="openCreateDashboardModal()">Create dashboard</button>
-    </div>
+           <button class="primary-btn" onclick="openCreateDashboardModal()">Создать дашборд</button>
+       </div>
+   </div>
 
     <form th:action="@{/logout}" method="post">
-        <button type="submit" class="logout-btn">Logout</button>
+        <button type="submit" class="logout-btn">Выйти</button>
     </form>
 </header>
 
@@ -281,7 +291,7 @@
             border-radius:8px;
             margin-bottom:20px;
         ">
-            <strong>Imported file:</strong>
+            <strong>Импортированный файл:</strong>
 
             <div th:if="${importedFileName != null}"
                  th:text="${importedFileName}"
@@ -289,11 +299,11 @@
             </div>
 
             <div th:if="${importedFileName == null}">
-                No file imported
+                Импортируйте файл
             </div>
         </div>
 
-        <h2>Dashboards</h2>
+        <h2>Дашборды</h2>
         <div th:each="dashboard : ${dashboards}" style="margin-bottom:15px;">
 
             <a class="dashboard-link"
@@ -308,108 +318,114 @@
             ">
                 <form th:action="@{'/dashboards/' + ${dashboard.id} + '/delete'}"
                       method="post"
-                      onsubmit="return confirm('Delete dashboard?');">
+                      onsubmit="return confirm('Удалить дашборд?');">
 
                     <button type="submit"
                             style="
-                        background:#ef4444;
-                        color:white;
-                    ">
+                            background:#ef4444;
+                            color:white;
+                        ">
                         Delete
                     </button>
-
                 </form>
             </div>
         </div>
     </aside>
 
     <main>
-        <h1 style="margin-bottom:25px;"
-            th:text="${dashboard != null ? dashboard.name : 'Customer Analytics Dashboard'}">
-        </h1>
-
-        <div th:if="${dashboard != null && dashboard.description != null}"
-             style="
-                margin-bottom:30px;
-                color:#666;
-                font-size:16px;
-                line-height:1.5;
-                max-width:1000px;
-             "
-             th:text="${dashboard.description}">
-        </div>
-
-        <div class="kpi-container">
-            <div class="kpi-card">
-                <h3>Total Customers</h3>
-                <p th:text="${stats.totalCustomers}"></p>
-            </div>
-            <div class="kpi-card">
-                <h3>Average Age</h3>
-                <p th:text="${stats.averageAge}"></p>
-            </div>
-            <div class="kpi-card">
-                <h3>Average Check</h3>
-                <p th:text="${stats.averageCheck}"></p>
-            </div>
-            <div class="kpi-card">
-                <h3>Male %</h3>
-                <p th:text="${stats.malePercent}"></p>
-            </div>
-            <div class="kpi-card">
-                <h3>Female %</h3>
-                <p th:text="${stats.femalePercent}"></p>
+        <div th:if="${dashboard == null}">
+            <div class="empty-dashboard">
+                Создайте первый дашборд
             </div>
         </div>
 
-        <div class="charts">
-            <div class="chart-card"
-                 style="grid-column:1/-1;">
-                <h2>Customers By Region</h2>
-                <canvas id="regionChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>Age Groups</h2>
-                <canvas id="ageChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>Gender Distribution</h2>
-                <canvas id="sexChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>Orders Distribution</h2>
-                <canvas id="ordersChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>Average Check Distribution</h2>
-                <canvas id="averageCheckChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>Total Spending Distribution</h2>
-                <canvas id="spendingChart"></canvas>
+        <div th:if="${dashboard != null}">
+            <h1 style="margin-bottom:25px;"
+                th:text="${dashboard != null ? dashboard.name : 'Customer Analytics Dashboard'}">
+            </h1>
+
+            <div th:if="${dashboard != null && dashboard.description != null}"
+                 style="
+                    margin-bottom:30px;
+                    color:#666;
+                    font-size:16px;
+                    line-height:1.5;
+                    max-width:1000px;
+                 "
+                 th:text="${dashboard.description}">
             </div>
 
-            <div class="chart-card">
-                <h2>ABC Analysis</h2>
-                <canvas id="abcChart"></canvas>
+            <div class="kpi-container">
+                <div class="kpi-card">
+                    <h3>Общее количество клиентов</h3>
+                    <p th:text="${stats.totalCustomers}"></p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Средний возраст</h3>
+                    <p th:text="${T(java.lang.Math).round(stats.averageAge)}"></p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Средний чек</h3>
+                    <p th:text="${#numbers.formatDecimal(stats.averageCheck, 1, 2)}"></p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Мужчины %</h3>
+                    <p th:text="${#numbers.formatDecimal(stats.malePercent, 1, 2)}"></p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Женчины %</h3>
+                    <p th:text="${#numbers.formatDecimal(stats.femalePercent, 1, 2)}"></p>
+                </div>
             </div>
-            <div class="chart-card">
-                <h2>XYZ Analysis</h2>
-                <canvas id="xyzChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>RFM Segments</h2>
-                <canvas id="rfmChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>ABC/XYZ Matrix</h2>
-                <canvas id="matrixChart"></canvas>
+
+            <div class="charts">
+                <div class="chart-card"
+                     style="grid-column:1/-1;">
+                    <h2>Клиенты по регионам</h2>
+                    <canvas id="regionChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>Возрастные группы</h2>
+                    <canvas id="ageChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>Распределение по полу</h2>
+                    <canvas id="sexChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>Распределение заказов</h2>
+                    <canvas id="ordersChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>Распределение среднего чека</h2>
+                    <canvas id="averageCheckChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>Распределение общих расходов</h2>
+                    <canvas id="spendingChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <h2>ABC Анализ</h2>
+                    <canvas id="abcChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>XYZ Анализ</h2>
+                    <canvas id="xyzChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>RFM Анализ</h2>
+                    <canvas id="rfmChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h2>ABC/XYZ Матрица</h2>
+                    <canvas id="matrixChart"></canvas>
+                </div>
             </div>
         </div>
     </main>
 
-    <aside id="settingsPanel"
-           class="settings-panel">
+    <aside id="settingsPanel" class="settings-panel">
 
         <button
                 id="toggleButton"
@@ -421,167 +437,194 @@
 
         <div class="settings-content">
 
-            <h2>Dashboard Settings</h2>
-            <form
-                    th:action="@{'/dashboards/' + ${dashboard.id} + '/settings'}"
-                    method="post">
+            <h2>Настройки дашборда</h2>
 
-                <div class="settings-group">
-                    <h3>Dashboard</h3>
+            <div th:if="${dashboard != null}">
+                <form
+                        th:action="@{'/dashboards/' + ${dashboard.id} + '/settings'}"
+                        method="post">
 
-                    <input name="dashboardName" th:value="${dashboard?.name}" placeholder="Name">
-                    <textarea name="dashboardDescription" placeholder="Description" th:text="${dashboard.description}"></textarea>
-                </div>
+                    <div class="settings-group">
+                        <h3>Дашборд</h3>
 
-                <div class="settings-group">
-                    <h3>Segment</h3>
+                        <input name="dashboardName" th:value="${dashboard?.name}" placeholder="Название">
+                        <textarea name="dashboardDescription" placeholder="Описание" th:text="${dashboard?.description}"></textarea>
+                    </div>
 
-                    <label>Age From</label>
-                    <input
-                            type="number"
-                            name="ageFrom"
-                            th:value="${segment?.ageFrom}">
+                    <div class="settings-group">
+                        <h3>Сегмент</h3>
 
-                    <label>Age To</label>
-                    <input
-                            type="number"
-                            name="ageTo"
-                            th:value="${segment?.ageTo}">
+                        <label class="settings__label">Возраст от</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                name="ageFrom"
+                                th:value="${segment?.ageFrom}">
 
-                    <label>Sex</label>
-                    <select name="sex">
-                        <option value="">Any</option>
-                        <option value="м">Мужчины</option>
-                        <option value="ж">Женщины</option>
-                    </select>
+                        <label class="settings__label">Возраст до</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                name="ageTo"
+                                th:value="${segment?.ageTo}">
 
-                    <label>Region</label>
-                    <select name="region">
+                        <label class="settings__label">Пол</label>
+                        <div class="settings__label"></div>
+                        <select name="sex">
+                            <option value="">Все</option>
+                            <option value="м">Мужчины</option>
+                            <option value="ж">Женщины</option>
+                        </select>
 
-                        <option value="">Все регионы</option>
+                        <label class="settings__label">Регион</label>
+                        <div class="settings__label"></div>
+                        <select name="region">
 
-                        <option th:each="regionValue : ${regions}"
-                                th:value="${regionValue}"
-                                th:text="${regionValue}"
-                                th:selected="${segment?.region == regionValue}">
-                        </option>
+                            <option value="">Все регионы</option>
 
-                    </select>
+                            <option th:each="regionValue : ${regions}"
+                                    th:value="${regionValue}"
+                                    th:text="${regionValue}"
+                                    th:selected="${segment?.region == regionValue}">
+                            </option>
 
-                    <label>Registration From</label>
-                    <input
-                            type="date"
-                            name="dateOfRegistrationFrom"
-                            th:value="${segment?.dateOfRegistrationFrom}">
+                        </select>
 
-                    <label>Registration To</label>
-                    <input
-                            type="date"
-                            name="dateOfRegistrationTo"
-                            th:value="${segment?.dateOfRegistrationTo}">
+                        <label class="settings__label">Зарегистрирован от</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="date"
+                                name="dateOfRegistrationFrom"
+                                th:value="${segment?.dateOfRegistrationFrom}">
 
-                    <label>Orders From</label>
-                    <input
-                            type="number"
-                            name="countOfOrdersFrom"
-                            th:value="${segment?.countOfOrdersFrom}">
+                        <label class="settings__label">Зарегистрирован до</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="date"
+                                name="dateOfRegistrationTo"
+                                th:value="${segment?.dateOfRegistrationTo}">
 
-                    <label>Orders To</label>
-                    <input
-                            type="number"
-                            name="countOfOrdersTo"
-                            th:value="${segment?.countOfOrdersTo}">
+                        <label class="settings__label">Количество заказав от</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                name="countOfOrdersFrom"
+                                th:value="${segment?.countOfOrdersFrom}">
 
-                    <label>Average Check From</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            name="averageCheckFrom"
-                            th:value="${segment?.averageCheckFrom}">
+                        <label class="settings__label">Количество заказав до</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                name="countOfOrdersTo"
+                                th:value="${segment?.countOfOrdersTo}">
 
-                    <label>Average Check To</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            name="averageCheckTo"
-                            th:value="${segment?.averageCheckTo}">
+                        <label class="settings__label">Средний чек от</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                step="0.01"
+                                name="averageCheckFrom"
+                                th:value="${segment?.averageCheckFrom}">
 
-                    <label>Total Spends From</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            name="totalSpendsFrom"
-                            th:value="${segment?.totalSpendsFrom}">
+                        <label class="settings__label">Средний чек до</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                step="0.01"
+                                name="averageCheckTo"
+                                th:value="${segment?.averageCheckTo}">
 
-                    <label>Total Spends To</label>
-                    <input
-                            type="number"
-                            step="0.01"
-                            name="totalSpendsTo"
-                            th:value="${segment?.totalSpendsTo}">
+                        <label class="settings__label">Общая сумма от</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                step="0.01"
+                                name="totalSpendsFrom"
+                                th:value="${segment?.totalSpendsFrom}">
 
-                    <label>Last Order From</label>
-                    <input
-                            type="date"
-                            name="lastOrderDateFrom"
-                            th:value="${segment?.lastOrderDateFrom}">
+                        <label class="settings__label">Общая сумма до</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="number"
+                                step="0.01"
+                                name="totalSpendsTo"
+                                th:value="${segment?.totalSpendsTo}">
 
-                    <label>Last Order To</label>
-                    <input
-                            type="date"
-                            name="lastOrderDateTo"
-                            th:value="${segment?.lastOrderDateTo}">
-                </div>
+                        <label class="settings__label">Последний заказ от</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="date"
+                                name="lastOrderDateFrom"
+                                th:value="${segment?.lastOrderDateFrom}">
 
-                <div class="settings-group">
-                    <h3>ABC Analysis</h3>
+                        <label class="settings__label">Последний заказ до</label>
+                        <div class="settings__label"></div>
+                        <input
+                                type="date"
+                                name="lastOrderDateTo"
+                                th:value="${segment?.lastOrderDateTo}">
+                    </div>
 
-                    <input th:value="${settings.abcCategoryABorder}" name="abcCategoryABorder">
-                    <input th:value="${settings.abcCategoryBBorder}" name="abcCategoryBBorder">
-                </div>
+                    <div class="settings-group">
+                        <h3>ABC Анализ</h3>
 
-                <div class="settings-group">
-                    <h3>XYZ Analysis</h3>
+                        <label class="settings__label">A</label>
+                        <div class="settings__label"></div>
+                        <input th:value="${settings.abcCategoryABorder}" name="abcCategoryABorder">
 
-                    <input th:value="${settings.xyzCategoryXBorder}" name="xyzCategoryXBorder">
-                    <input th:value="${settings.xyzCategoryYBorder}" name="xyzCategoryYBorder">
-                </div>
+                        <label class="settings__label">B</label>
+                        <div class="settings__label"></div>
+                        <input th:value="${settings.abcCategoryBBorder}" name="abcCategoryBBorder">
+                    </div>
 
-                <div class="settings-group">
-                    <h3>RFM Recency</h3>
+                    <div class="settings-group">
+                        <h3>XYZ Анализ</h3>
 
-                    <input name="recency5" th:value="${settings.recency5}">
-                    <input name="recency4" th:value="${settings.recency4}">
-                    <input name="recency3" th:value="${settings.recency3}">
-                    <input name="recency2" th:value="${settings.recency2}">
-                </div>
+                        <label class="settings__label">X</label>
+                        <div class="settings__label"></div>
+                        <input th:value="${settings.xyzCategoryXBorder}" name="xyzCategoryXBorder">
 
-                <div class="settings-group">
-                    <h3>RFM Frequency</h3>
+                        <label class="settings__label">Y</label>
+                        <div class="settings__label"></div>
+                        <input th:value="${settings.xyzCategoryYBorder}" name="xyzCategoryYBorder">
+                    </div>
 
-                    <input name="frequency2" th:value="${settings.frequency2}">
-                    <input name="frequency3" th:value="${settings.frequency3}">
-                    <input name="frequency4" th:value="${settings.frequency4}">
-                    <input name="frequency5" th:value="${settings.frequency5}">
-                </div>
+                    <div class="settings-group">
+                        <h3>RFM Recency (Актуальность)</h3>
 
-                <div class="settings-group">
-                    <h3>RFM Monetary</h3>
+                        <input name="recency5" th:value="${settings.recency5}">
+                        <input name="recency4" th:value="${settings.recency4}">
+                        <input name="recency3" th:value="${settings.recency3}">
+                        <input name="recency2" th:value="${settings.recency2}">
+                    </div>
 
-                    <input name="monetary2" th:value="${settings.monetary2}">
-                    <input name="monetary3" th:value="${settings.monetary3}">
-                    <input name="monetary4" th:value="${settings.monetary4}">
-                    <input name="monetary5" th:value="${settings.monetary5}">
-                </div>
+                    <div class="settings-group">
+                        <h3>RFM Frequency (Частота)</h3>
 
-                <div style="
-                    margin-top:20px;
-                    display:flex;
-                    justify-content:center;
-                ">
-                    <button type="submit" class="primary-btn">Save</button>
-                </div>
-            </form>
+                        <input name="frequency2" th:value="${settings.frequency2}">
+                        <input name="frequency3" th:value="${settings.frequency3}">
+                        <input name="frequency4" th:value="${settings.frequency4}">
+                        <input name="frequency5" th:value="${settings.frequency5}">
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>RFM Monetary (Сумма)</h3>
+
+                        <input name="monetary2" th:value="${settings.monetary2}">
+                        <input name="monetary3" th:value="${settings.monetary3}">
+                        <input name="monetary4" th:value="${settings.monetary4}">
+                        <input name="monetary5" th:value="${settings.monetary5}">
+                    </div>
+
+                    <div style="
+                        margin-top:20px;
+                        display:flex;
+                        justify-content:center;
+                    ">
+                        <button type="submit" class="primary-btn">Сохранить</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </aside>
 </div>
@@ -603,7 +646,7 @@
         data: {
             labels: Object.keys(regions),
             datasets: [{
-                label: 'Customers',
+                label: 'Клиенты',
                 data: Object.values(regions)
             }]
         }
@@ -631,7 +674,7 @@
         data: {
             labels: Object.keys(ordersGroups),
             datasets: [{
-                label: 'Customers',
+                label: 'Клиенты',
                 data: Object.values(ordersGroups)
             }]
         }
@@ -641,7 +684,7 @@
         data: {
             labels: Object.keys(averageCheckGroups),
             datasets: [{
-                label: 'Customers',
+                label: 'Клиенты',
                 data: Object.values(averageCheckGroups)
             }]
         }
@@ -651,7 +694,7 @@
         data: {
             labels: Object.keys(spendingGroups),
             datasets: [{
-                label: 'Customers',
+                label: 'Клиенты',
                 data: Object.values(spendingGroups)
             }]
         }
@@ -689,7 +732,7 @@
         data: {
             labels: Object.keys(matrixGroups),
             datasets: [{
-                label: 'Customers',
+                label: 'Клиенты',
                 data: Object.values(matrixGroups)
             }]
         }
@@ -769,7 +812,7 @@
 
         <span class="close-modal" onclick="closeCreateDashboardModal()">&times;</span>
 
-        <h2>Create Dashboard</h2>
+        <h2>Создать дашборд</h2>
 
         <form th:action="@{/dashboards/create}"
               th:object="${dashboardForm}"
@@ -778,12 +821,12 @@
             <input
                     type="text"
                     th:field="*{dashboardName}"
-                    placeholder="Dashboard name"
+                    placeholder="Название дашборда"
                     required>
 
             <textarea
                     th:field="*{dashboardDescription}"
-                    placeholder="Description">
+                    placeholder="Описание">
             </textarea>
 
             <label>Импортированный файл</label>
@@ -792,7 +835,7 @@
                     th:value="${importedFileName}"
                     readonly>
 
-            <button type="submit" class="primary-btn">Create</button>
+            <button type="submit" class="primary-btn">Создать</button>
         </form>
     </div>
 </div>
