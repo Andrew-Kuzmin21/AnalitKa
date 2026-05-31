@@ -99,8 +99,22 @@
         .sidebar h2 {
             margin-bottom: 20px;
         }
+        .import__title {
+            display: block;
+            width: 100%;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         .dashboard-link {
             display: block;
+            width: 100%;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
             padding: 12px;
             margin-bottom: 10px;
             background: #f4f6f9;
@@ -153,7 +167,7 @@
         }
         canvas {
             width: 100% !important;
-            height: 300px !important;
+            height: 380px !important;
         }
         button {
             cursor: pointer;
@@ -270,7 +284,8 @@
             <strong>Imported file:</strong>
 
             <div th:if="${importedFileName != null}"
-                 th:text="${importedFileName}">
+                 th:text="${importedFileName}"
+                 class="import__title">
             </div>
 
             <div th:if="${importedFileName == null}">
@@ -279,8 +294,7 @@
         </div>
 
         <h2>Dashboards</h2>
-        <div th:each="dashboard : ${dashboards}"
-             style="margin-bottom:15px;">
+        <div th:each="dashboard : ${dashboards}" style="margin-bottom:15px;">
 
             <a class="dashboard-link"
                th:href="@{'/dashboards/' + ${dashboard.id}}"
@@ -347,8 +361,10 @@
                 <p th:text="${stats.femalePercent}"></p>
             </div>
         </div>
+
         <div class="charts">
-            <div class="chart-card">
+            <div class="chart-card"
+                 style="grid-column:1/-1;">
                 <h2>Customers By Region</h2>
                 <canvas id="regionChart"></canvas>
             </div>
@@ -356,6 +372,23 @@
                 <h2>Age Groups</h2>
                 <canvas id="ageChart"></canvas>
             </div>
+            <div class="chart-card">
+                <h2>Gender Distribution</h2>
+                <canvas id="sexChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>Orders Distribution</h2>
+                <canvas id="ordersChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>Average Check Distribution</h2>
+                <canvas id="averageCheckChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>Total Spending Distribution</h2>
+                <canvas id="spendingChart"></canvas>
+            </div>
+
             <div class="chart-card">
                 <h2>ABC Analysis</h2>
                 <canvas id="abcChart"></canvas>
@@ -371,17 +404,6 @@
             <div class="chart-card">
                 <h2>ABC/XYZ Matrix</h2>
                 <canvas id="matrixChart"></canvas>
-            </div>
-            <div class="chart-card"
-                 style="grid-column:1/-1;">
-                <h2>Customers By Region Map</h2>
-
-                <div id="customerMap"
-                     style="
-                        height:700px;
-                        width:100%;
-                     ">
-                </div>
             </div>
         </div>
     </main>
@@ -567,9 +589,14 @@
 <script th:inline="javascript">
     const regions = [[${stats.customersByRegion}]];
     const ageGroups = [[${stats.customersByAgeGroup}]];
-    const rfmSegments = [[${stats.rfmSegments}]];
+    const sexGroups = [[${stats.customersBySex}]];
+    const ordersGroups = [[${stats.customersByOrders}]];
+    const averageCheckGroups = [[${stats.customersByAverageCheck}]];
+    const spendingGroups = [[${stats.customersByTotalSpends}]];
+
     const abcCategories = [[${stats.abcCategories}]];
     const xyzCategories = [[${stats.xyzCategories}]];
+    const rfmSegments = [[${stats.rfmSegments}]];
     const matrixGroups = [[${stats.abcXyzGroups}]];
     new Chart(document.getElementById('regionChart'), {
         type: 'bar',
@@ -590,6 +617,46 @@
             }]
         }
     });
+    new Chart(document.getElementById('sexChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(sexGroups),
+            datasets: [{
+                data: Object.values(sexGroups)
+            }]
+        }
+    });
+    new Chart(document.getElementById('ordersChart'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(ordersGroups),
+            datasets: [{
+                label: 'Customers',
+                data: Object.values(ordersGroups)
+            }]
+        }
+    });
+    new Chart(document.getElementById('averageCheckChart'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(averageCheckGroups),
+            datasets: [{
+                label: 'Customers',
+                data: Object.values(averageCheckGroups)
+            }]
+        }
+    });
+    new Chart(document.getElementById('spendingChart'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(spendingGroups),
+            datasets: [{
+                label: 'Customers',
+                data: Object.values(spendingGroups)
+            }]
+        }
+    });
+
     new Chart(document.getElementById('rfmChart'), {
         type: 'doughnut',
         data: {

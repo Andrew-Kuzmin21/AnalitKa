@@ -16,9 +16,14 @@ public class DashboardStatisticsDto {
 
     private Map<String, Long> customersByRegion;
     private Map<String, Long> customersByAgeGroup;
-    private Map<String, Long> rfmSegments;
+    private Map<String, Long> customersBySex;
+    private Map<String, Long> customersByOrders;
+    private Map<String, Long> customersByAverageCheck;
+    private Map<String, Long> customersByTotalSpends;
+
     private Map<String, Long> abcCategories;
     private Map<String, Long> xyzCategories;
+    private Map<String, Long> rfmSegments;
     private Map<String, Long> abcXyzGroups;
 
 }

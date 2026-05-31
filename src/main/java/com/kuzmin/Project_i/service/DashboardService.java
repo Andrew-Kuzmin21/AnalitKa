@@ -142,6 +142,125 @@ public class DashboardService {
 
         dto.setCustomersByAgeGroup(ageGroups);
 
+
+        Map<String, Long> sexGroups = new LinkedHashMap<>();
+        sexGroups.put("Male", maleCount);
+        sexGroups.put("Female", femaleCount);
+        dto.setCustomersBySex(sexGroups);
+
+        Map<String, Long> ordersGroups = new LinkedHashMap<>();
+
+        ordersGroups.put("0-5", 0L);
+        ordersGroups.put("6-10", 0L);
+        ordersGroups.put("11-20", 0L);
+        ordersGroups.put("20+", 0L);
+
+        for (Customer customer : customers) {
+
+            Integer orders = customer.getCountOfOrders();
+
+            if (orders == null) {
+                continue;
+            }
+
+            if (orders <= 5) {
+                ordersGroups.put("0-5", ordersGroups.get("0-5") + 1);
+            } else if (orders <= 10) {
+                ordersGroups.put("6-10", ordersGroups.get("6-10") + 1);
+            } else if (orders <= 20) {
+                ordersGroups.put("11-20", ordersGroups.get("11-20") + 1);
+            } else {
+                ordersGroups.put("20+", ordersGroups.get("20+") + 1);
+            }
+        }
+
+        dto.setCustomersByOrders(ordersGroups);
+
+        Map<String, Long> averageCheckGroups = new LinkedHashMap<>();
+
+        averageCheckGroups.put("<1000", 0L);
+        averageCheckGroups.put("1000-3000", 0L);
+        averageCheckGroups.put("3000-5000", 0L);
+        averageCheckGroups.put("5000+", 0L);
+
+        for (Customer customer : customers) {
+
+            if (customer.getAverageCheck() == null) {
+                continue;
+            }
+
+            BigDecimal check = customer.getAverageCheck();
+
+            if (check.compareTo(BigDecimal.valueOf(1000)) < 0) {
+                averageCheckGroups.put("<1000",
+                        averageCheckGroups.get("<1000") + 1);
+            }
+            else if (check.compareTo(BigDecimal.valueOf(3000)) < 0) {
+                averageCheckGroups.put("1000-3000",
+                        averageCheckGroups.get("1000-3000") + 1);
+            }
+            else if (check.compareTo(BigDecimal.valueOf(5000)) < 0) {
+                averageCheckGroups.put("3000-5000",
+                        averageCheckGroups.get("3000-5000") + 1);
+            }
+            else {
+                averageCheckGroups.put("5000+",
+                        averageCheckGroups.get("5000+") + 1);
+            }
+        }
+
+        dto.setCustomersByAverageCheck(averageCheckGroups);
+
+        Map<String, Long> spendGroups = new LinkedHashMap<>();
+
+        spendGroups.put("<10000", 0L);
+        spendGroups.put("10000-50000", 0L);
+        spendGroups.put("50000-100000", 0L);
+        spendGroups.put("100000+", 0L);
+
+        for (Customer customer : customers) {
+
+            if (customer.getTotalSpent() == null) {
+                continue;
+            }
+
+
+            BigDecimal spends = customer.getTotalSpent();
+
+            if (spends.compareTo(BigDecimal.valueOf(10000)) < 0) {
+
+                spendGroups.put(
+                        "<10000",
+                        spendGroups.get("<10000") + 1
+                );
+
+            } else if (spends.compareTo(BigDecimal.valueOf(50000)) < 0) {
+
+                spendGroups.put(
+                        "10000-50000",
+                        spendGroups.get("10000-50000") + 1
+                );
+
+            } else if (spends.compareTo(BigDecimal.valueOf(100000)) < 0) {
+
+                spendGroups.put(
+                        "50000-100000",
+                        spendGroups.get("50000-100000") + 1
+                );
+
+            } else {
+
+                spendGroups.put(
+                        "100000+",
+                        spendGroups.get("100000+") + 1
+                );
+            }
+        }
+
+        dto.setCustomersByTotalSpends(spendGroups);
+
+
+
         dto.setAbcCategories(
                 dashboardAnalysisService.calculateAbc(
                         customers,
