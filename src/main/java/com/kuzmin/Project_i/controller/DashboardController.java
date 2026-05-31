@@ -76,6 +76,11 @@ public class DashboardController {
                 new DashboardStatisticsDto()
         );
 
+        model.addAttribute(
+                "dashboardForm",
+                new DashboardFormDto()
+        );
+
         if (!dashboards.isEmpty()) {
 
             Dashboard dashboard = dashboards.getFirst();
@@ -212,6 +217,11 @@ public class DashboardController {
                 dashboardService.getStatistics(
                         dashboard
                 )
+        );
+
+        model.addAttribute(
+                "dashboardForm",
+                new DashboardFormDto()
         );
 
         return "dashboard/index";

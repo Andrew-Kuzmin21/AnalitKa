@@ -42,6 +42,49 @@
             align-items: center;
             gap: 20px;
         }
+        .modal {
+            display: none;
+
+            position: fixed;
+            z-index: 9999;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0,0,0,.5);
+        }
+
+        .modal-content {
+            background: white;
+
+            width: 500px;
+
+            margin: 80px auto;
+
+            padding: 25px;
+
+            border-radius: 12px;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+
+            padding: 10px;
+
+            margin-bottom: 15px;
+        }
+
+        .close-modal {
+            float: right;
+
+            font-size: 24px;
+
+            cursor: pointer;
+        }
         .layout {
             display: flex;
             height: calc(100vh - 70px);
@@ -204,20 +247,14 @@
               method="post"
               enctype="multipart/form-data">
             <input type="file" name="file" required>
-            <button type="submit" class="primary-btn">
-                Import CSV
-            </button>
+            <button type="submit" class="primary-btn">Import CSV</button>
         </form>
-        <a th:href="@{/dashboards/create}">
-            <button class="primary-btn">
-                Create dashboard
-            </button>
-        </a>
+
+        <button class="primary-btn" onclick="openCreateDashboardModal()">Create dashboard</button>
     </div>
+
     <form th:action="@{/logout}" method="post">
-        <button type="submit" class="logout-btn">
-            Logout
-        </button>
+        <button type="submit" class="logout-btn">Logout</button>
     </form>
 </header>
 
@@ -658,5 +695,65 @@
         }
     }
 </script>
+
+<div id="createDashboardModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close-modal" onclick="closeCreateDashboardModal()">&times;</span>
+
+        <h2>Create Dashboard</h2>
+
+        <form th:action="@{/dashboards/create}"
+              th:object="${dashboardForm}"
+              method="post">
+
+            <input
+                    type="text"
+                    th:field="*{dashboardName}"
+                    placeholder="Dashboard name"
+                    required>
+
+            <textarea
+                    th:field="*{dashboardDescription}"
+                    placeholder="Description">
+            </textarea>
+
+            <label>Импортированный файл</label>
+            <input
+                    type="text"
+                    th:value="${importedFileName}"
+                    readonly>
+
+            <button type="submit" class="primary-btn">Create</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCreateDashboardModal() {
+        document.getElementById(
+            "createDashboardModal"
+        ).style.display = "block";
+    }
+
+    function closeCreateDashboardModal() {
+        document.getElementById(
+            "createDashboardModal"
+        ).style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        const modal =
+            document.getElementById(
+                "createDashboardModal"
+            );
+
+        if (event.target === modal) {
+            closeCreateDashboardModal();
+        }
+    }
+</script>
+
 </body>
 </html>
