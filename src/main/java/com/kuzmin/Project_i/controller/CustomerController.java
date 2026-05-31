@@ -14,26 +14,13 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final ImportService importService;
-    private final RfmAnalyseService rfmAnalyseService;
-
-    private final AbcAnalyseService abcAnalyseService;
-    private final XyzAnalyseService xyzAnalyseService;
-    private final AbcXyzMatrixService abcXyzMatrixService;
 
     public CustomerController(
             CustomerService customerService,
-            ImportService importService,
-            RfmAnalyseService rfmAnalyseService,
-            AbcAnalyseService abcAnalyseService,
-            XyzAnalyseService xyzAnalyseService,
-            AbcXyzMatrixService abcXyzMatrixService
+            ImportService importService
     ) {
         this.customerService = customerService;
         this.importService = importService;
-        this.rfmAnalyseService = rfmAnalyseService;
-        this.abcAnalyseService = abcAnalyseService;
-        this.xyzAnalyseService = xyzAnalyseService;
-        this.abcXyzMatrixService = abcXyzMatrixService;
     }
 
     @GetMapping("/import")
@@ -92,11 +79,6 @@ public class CustomerController {
         User user = (User) authentication.getPrincipal();
 
         importService.importCsv(file, user);
-
-        rfmAnalyseService.runAnalysis(user);
-        abcAnalyseService.runAnalysis(user);
-        xyzAnalyseService.runAnalysis(user);
-        abcXyzMatrixService.runAnalysis(user);
 
         return "redirect:/dashboards";
     }

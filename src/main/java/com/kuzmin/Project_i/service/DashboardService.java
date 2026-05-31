@@ -21,18 +21,20 @@ public class DashboardService {
 
     private final CustomerRepository customerRepository;
     private final DashboardRepository dashboardRepository;
-    private final RfmAnalyseRepository rfmAnalyseRepository;
-    private final AbcAnalyseRepository abcAnalyseRepository;
-    private final XyzAnalyseRepository xyzAnalyseRepository;
-    private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
     private final SegmentFilteringService segmentFilteringService;
+    private final DashboardAnalysisService dashboardAnalysisService;
 
     public DashboardStatisticsDto getStatistics(
             Dashboard dashboard
     ) {
 
         List<Customer> customers;
+        DashboardSettings settings = dashboard.getSettings();
+
+        if (settings == null) {
+            settings = new DashboardSettings();
+        }
 
         if (dashboard.getSegment() == null) {
             customers =
@@ -47,11 +49,6 @@ public class DashboardService {
                             dashboard.getUser()
                     );
         }
-
-        List<RfmAnalyse> rfmAnalyses =
-                rfmAnalyseRepository.findAllByCustomerIn(
-                        customers
-                );
 
         DashboardStatisticsDto dto = new DashboardStatisticsDto();
 
@@ -145,83 +142,33 @@ public class DashboardService {
 
         dto.setCustomersByAgeGroup(ageGroups);
 
-        Map<String, Long> rfmSegments = new LinkedHashMap<>();
-
-        for (RfmAnalyse analyse : rfmAnalyses) {
-            String segment = analyse.getRfmSegment().name();
-
-            rfmSegments.put(
-                    segment,
-                    rfmSegments.getOrDefault(
-                            segment,
-                            0L
-                    ) + 1
-            );
-        }
-
-        Map<String, Long> abcCategories = new LinkedHashMap<>();
-
-        abcCategories.put("A", 0L);
-        abcCategories.put("B", 0L);
-        abcCategories.put("C", 0L);
-
-        abcAnalyseRepository.findAllByCustomerIn(
-                        customers
+        dto.setAbcCategories(
+                dashboardAnalysisService.calculateAbc(
+                        customers,
+                        settings
                 )
-                .forEach(analyse -> {
+        );
 
-                    String category = analyse.getAbcCategory().name();
-
-                    abcCategories.put(
-                            category,
-                            abcCategories.get(category) + 1
-                    );
-                });
-
-
-        dto.setAbcCategories(abcCategories);
-
-        Map<String, Long> xyzCategories = new LinkedHashMap<>();
-
-        xyzCategories.put("X", 0L);
-        xyzCategories.put("Y", 0L);
-        xyzCategories.put("Z", 0L);
-
-        xyzAnalyseRepository.findAllByCustomerIn(
-                        customers
+        dto.setXyzCategories(
+                dashboardAnalysisService.calculateXyz(
+                        customers,
+                        settings
                 )
-                .forEach(analyse -> {
+        );
 
-                    String category = analyse.getXyzCategory().name();
-
-                    xyzCategories.put(
-                            category,
-                            xyzCategories.get(category) + 1
-                    );
-                });
-
-        dto.setXyzCategories(xyzCategories);
-
-        Map<String, Long> matrixGroups = new LinkedHashMap<>();
-
-        abcXyzMatrixRepository.findAllByCustomerIn(
-                        customers
+        dto.setRfmSegments(
+                dashboardAnalysisService.calculateRfm(
+                        customers,
+                        settings
                 )
-                .forEach(matrix -> {
+        );
 
-                    String group = matrix.getMatrixGroup();
-
-                    matrixGroups.put(
-                            group,
-                            matrixGroups.getOrDefault(
-                                    group,
-                                    0L
-                            ) + 1
-                    );
-                });
-
-        dto.setAbcXyzGroups(matrixGroups);
-        dto.setRfmSegments(rfmSegments);
+        dto.setAbcXyzGroups(
+                dashboardAnalysisService.calculateAbcXyz(
+                        customers,
+                        settings
+                )
+        );
 
         return dto;
     }

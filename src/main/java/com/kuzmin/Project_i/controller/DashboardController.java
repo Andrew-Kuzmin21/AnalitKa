@@ -3,9 +3,11 @@ package com.kuzmin.Project_i.controller;
 import com.kuzmin.Project_i.dto.DashboardFormDto;
 import com.kuzmin.Project_i.dto.DashboardStatisticsDto;
 import com.kuzmin.Project_i.model.Dashboard;
+import com.kuzmin.Project_i.model.DashboardSettings;
 import com.kuzmin.Project_i.model.Segment;
 import com.kuzmin.Project_i.model.User;
 import com.kuzmin.Project_i.service.DashboardService;
+import com.kuzmin.Project_i.service.DashboardSettingsService;
 import com.kuzmin.Project_i.service.SegmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,7 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
     private final SegmentService segmentService;
+    private final DashboardSettingsService dashboardSettingsService;
 
     @GetMapping
     public String dashboard(
@@ -218,8 +221,16 @@ public class DashboardController {
         );
 
         dashboard.setUser(user);
-
         dashboard.setSegment(segment);
+        dashboardService.save(dashboard);
+
+        DashboardSettings settings = new DashboardSettings();
+
+        settings.setDashboard(dashboard);
+
+        dashboardSettingsService.save(settings);
+
+        dashboard.setSettings(settings);
 
         dashboardService.save(dashboard);
 
@@ -359,10 +370,6 @@ public class DashboardController {
         Dashboard dashboard = dashboardService.findByIdAndUser(
                 id,
                 user
-        );
-
-        dashboardService.deleteById(
-                dashboard.getId()
         );
 
         Segment segment =

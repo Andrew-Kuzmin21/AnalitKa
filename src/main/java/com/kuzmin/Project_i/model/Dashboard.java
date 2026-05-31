@@ -41,6 +41,9 @@ public class Dashboard {
     @OneToMany(mappedBy = "dashboard")
     private List<Chart> charts;
 
+    @OneToOne(mappedBy = "dashboard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private DashboardSettings settings;
+
     @PrePersist
     public void prePersist() {
 

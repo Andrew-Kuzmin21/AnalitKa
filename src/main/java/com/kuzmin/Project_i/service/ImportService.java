@@ -23,16 +23,9 @@ import java.util.List;
 public class ImportService {
 
     private final CustomerRepository customerRepository;
-    private final UserService userService;
-
     private final UserRepository userRepository;
     private final DashboardRepository dashboardRepository;
     private final SegmentRepository segmentRepository;
-
-    private final AbcAnalyseRepository abcAnalyseRepository;
-    private final XyzAnalyseRepository xyzAnalyseRepository;
-    private final RfmAnalyseRepository rfmAnalyseRepository;
-    private final AbcXyzMatrixRepository abcXyzMatrixRepository;
 
     public void importCsv(MultipartFile file, User user) {
 
@@ -44,10 +37,6 @@ public class ImportService {
             throw new RuntimeException("Только CSV файлы");
         }
 
-        abcXyzMatrixRepository.deleteAllByUser(user);
-        abcAnalyseRepository.deleteAllByUser(user);
-        xyzAnalyseRepository.deleteAllByUser(user);
-        rfmAnalyseRepository.deleteAllByUser(user);
         dashboardRepository.deleteAllByUser(user);
         segmentRepository.deleteAllByUser(user);
         customerRepository.deleteAllByUser(user);

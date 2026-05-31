@@ -35,7 +35,7 @@
         .header__logo__title {
             font-size: 20px;
             font-style: italic;
-            font-weight: bold;
+            color: #fff;
         }
         .header-left {
             display: flex;
@@ -266,6 +266,41 @@
                 <h2>Age Groups</h2>
                 <canvas id="ageChart"></canvas>
             </div>
+
+            <div>
+                <h5>ABC Analysis</h5>
+                <input type="number"
+                       step="0.01"
+                       name="abcCategoryABorder">
+                <input type="number"
+                       step="0.01"
+                       name="abcCategoryBBorder">
+
+                <h5>XYZ Analysis</h5>
+                <input type="number"
+                       step="0.01"
+                       name="xyzCategoryXBorder">
+                <input type="number"
+                       step="0.01"
+                       name="xyzCategoryYBorder">
+
+                <h5>RFM Analysis</h5>
+                <input name="recency5">
+                <input name="recency4">
+                <input name="recency3">
+                <input name="recency2">
+
+                <input name="frequency2">
+                <input name="frequency3">
+                <input name="frequency4">
+                <input name="frequency5">
+
+                <input name="monetary2">
+                <input name="monetary3">
+                <input name="monetary4">
+                <input name="monetary5">
+            </div>
+
             <div class="chart-card">
                 <h2>RFM Segments</h2>
                 <canvas id="rfmChart"></canvas>

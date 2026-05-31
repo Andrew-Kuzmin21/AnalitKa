@@ -47,13 +47,5 @@ public class Customer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @OneToMany(mappedBy = "customer")
-    private List<AbcAnalyse> abcAnalyses;
-
-    @OneToMany(mappedBy = "customer")
-    private List<XyzAnalyse> xyzAnalyses;
-
-    @OneToMany(mappedBy = "customer")
-    private List<RfmAnalyse> rfmAnalyses;
+    
 }
